@@ -143,6 +143,7 @@ section{ padding:96px 0; }
   transition:color .15s ease;
 }
 .nav-links a:hover, .nav-links a.active{ color:var(--white); }
+.nav-link-cta{ display:none; }
 .nav-cta{ display:flex; align-items:center; gap:12px; }
 .nav-toggle{
   display:none;
@@ -158,8 +159,8 @@ section{ padding:96px 0; }
   }
   .nav-links.open{ display:flex; }
   .nav-links a{ padding:14px 0; width:100%; border-bottom:1px solid var(--line); }
-  .nav-links .nav-link-cta{ border-bottom:none; padding:16px 0 8px; }
-  .nav-links .nav-link-cta .btn{ width:100%; }
+  .nav-link-cta{ display:block; border-bottom:none; padding:16px 0 8px; }
+  .nav-link-cta.btn{ width:100%; }
   .nav-cta .btn-ghost{ display:none; }
   .nav-toggle{ display:inline-flex; align-items:center; justify-content:center; }
 }
