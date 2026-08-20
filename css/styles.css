@@ -46,9 +46,9 @@ h1,h2,h3,h4{
 }
 p{ margin:0 0 1em; color:var(--ink-2); }
 .container{
-  max-width:var(--container);
-  margin:0 auto;
-  padding:0 24px;
+  width:100%;
+  margin:0;
+  padding:0;
 }
 section{ padding:96px 0; }
 @media (max-width:720px){ section{ padding:64px 0; } }
