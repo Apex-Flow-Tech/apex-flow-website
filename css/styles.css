@@ -119,7 +119,7 @@ section{ padding:96px 0; }
 }
 .nav{
   display:flex; align-items:center; justify-content:space-between;
-  padding:16px 0;
+  padding-top:16px; padding-bottom:16px;
 }
 .brand{ display:flex; align-items:center; gap:10px; }
 .brand-mark{
