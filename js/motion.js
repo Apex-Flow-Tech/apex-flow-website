@@ -1,0 +1,121 @@
+document.addEventListener('DOMContentLoaded', () => {
+  if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+  gsap.registerPlugin(ScrollTrigger);
+
+  const mm = gsap.matchMedia();
+
+  mm.add(
+    {
+      reduce: '(prefers-reduced-motion: reduce)',
+      normal: '(prefers-reduced-motion: no-preference)',
+      canHover: '(hover: hover)'
+    },
+    (context) => {
+      const { reduce, canHover } = context.conditions;
+
+      // ---- Grid stagger reveal ----
+      gsap.utils.toArray('.grid').forEach((grid) => {
+        const children = Array.from(grid.children);
+        if (!children.length) return;
+        if (reduce) { gsap.set(children, { opacity: 1, y: 0 }); return; }
+        gsap.from(children, {
+          opacity: 0, y: 26, duration: 0.55, stagger: 0.08, ease: 'power2.out',
+          scrollTrigger: { trigger: grid, start: 'top 85%', toggleActions: 'play none none reverse' }
+        });
+      });
+
+      // ---- Standalone section reveal (not already covered by a grid) ----
+      const standalone = gsap.utils
+        .toArray('.pricing-card, .process-step, .cta-band, .section-head, .quote-card, .placeholder-note')
+        .filter((el) => !el.closest('.grid'));
+      standalone.forEach((el) => {
+        if (reduce) { gsap.set(el, { opacity: 1, y: 0 }); return; }
+        gsap.from(el, {
+          opacity: 0, y: 28, duration: 0.6, ease: 'power2.out',
+          scrollTrigger: { trigger: el, start: 'top 88%', toggleActions: 'play none none reverse' }
+        });
+      });
+
+      // ---- Scroll-scrubbed word highlight ----
+      gsap.utils.toArray('.scroll-highlight').forEach((el) => {
+        if (el.dataset.shSplit) return;
+        const text = el.textContent;
+        el.innerHTML = text
+          .split(/(\s+)/)
+          .map((w) => (w.trim() ? `<span class="sh-word">${w}</span>` : w))
+          .join('');
+        el.dataset.shSplit = 'true';
+        const words = el.querySelectorAll('.sh-word');
+        if (reduce) { gsap.set(words, { opacity: 1 }); return; }
+        gsap.set(words, { opacity: 0.28 });
+        gsap.to(words, {
+          opacity: 1, stagger: 0.05, ease: 'none',
+          scrollTrigger: { trigger: el, start: 'top 78%', end: 'bottom 48%', scrub: 0.6 }
+        });
+      });
+
+      if (!reduce) {
+        // ---- Hero visual parallax ----
+        gsap.utils.toArray('.hero-visual').forEach((el) => {
+          gsap.to(el, {
+            yPercent: -7, ease: 'none',
+            scrollTrigger: { trigger: el, start: 'top bottom', end: 'bottom top', scrub: 0.6 }
+          });
+        });
+
+        // ---- Pipeline path draws in on scroll ----
+        gsap.utils.toArray('.pipeline-path').forEach((path) => {
+          const len = path.getTotalLength();
+          gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
+          gsap.to(path, {
+            strokeDashoffset: 0, ease: 'none',
+            scrollTrigger: {
+              trigger: path.closest('.hero-visual') || path,
+              start: 'top 82%', end: 'bottom 55%', scrub: 0.6
+            }
+          });
+        });
+
+        // ---- Pipeline node dots pop in with the path ----
+        gsap.utils.toArray('.pipeline-node').forEach((node, i) => {
+          gsap.fromTo(node, { scale: 0, opacity: 0 }, {
+            scale: 1, opacity: 1, ease: 'back.out(2)',
+            scrollTrigger: {
+              trigger: node.closest('.hero-visual') || node,
+              start: 'top 82%', end: 'bottom 55%', scrub: 0.6
+            }
+          });
+        });
+      }
+
+      // ---- 3D tilt on cards (pointer devices only) ----
+      if (!reduce && canHover) {
+        gsap.utils.toArray('.card, .pricing-card').forEach((card) => {
+          gsap.set(card, { transformPerspective: 700, transformStyle: 'preserve-3d' });
+          const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.45, ease: 'power2.out' });
+          const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.45, ease: 'power2.out' });
+          const lift = gsap.quickTo(card, 'z', { duration: 0.45, ease: 'power2.out' });
+
+          const onMove = (e) => {
+            const r = card.getBoundingClientRect();
+            const px = (e.clientX - r.left) / r.width - 0.5;
+            const py = (e.clientY - r.top) / r.height - 0.5;
+            rotY(px * 7);
+            rotX(py * -7);
+            lift(12);
+          };
+          const onLeave = () => { rotX(0); rotY(0); lift(0); };
+
+          card.addEventListener('mousemove', onMove);
+          card.addEventListener('mouseleave', onLeave);
+        });
+      }
+
+      return () => {
+        // gsap.matchMedia reverts tweens/triggers created in this context automatically
+      };
+    }
+  );
+
+  window.addEventListener('load', () => ScrollTrigger.refresh());
+});

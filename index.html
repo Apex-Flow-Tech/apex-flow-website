@@ -44,7 +44,7 @@
       <div>
         <span class="eyebrow">Chaos in. Clarity out.</span>
         <h1>CRM architecture &amp; automation for teams that have <span class="accent">outgrown spreadsheets.</span></h1>
-        <p class="hero-lead">Apex Flow Technology Group engineers Salesforce systems that turn scattered leads, spreadsheets, and manual handoffs into one automated, governed pipeline — from first contact to closed deal.</p>
+        <p class="hero-lead scroll-highlight">Apex Flow Technology Group engineers Salesforce systems that turn scattered leads, spreadsheets, and manual handoffs into one automated, governed pipeline — from first contact to closed deal.</p>
         <div class="hero-actions">
           <a href="contact.html" class="btn btn-primary">
             Book a Strategy Call
@@ -60,7 +60,7 @@
       </div>
 
       <div class="hero-visual" aria-hidden="true">
-        <svg viewBox="0 0 520 460" width="100%" height="auto">
+        <svg viewBox="0 0 520 460" width="100%" style="height:auto; display:block;">
           <defs>
             <linearGradient id="peakFill" x1="0" y1="0" x2="0" y2="1">
               <stop offset="0%" stop-color="#58a6ff" stop-opacity=".35"/>
@@ -73,15 +73,15 @@
           <!-- baseline -->
           <line x1="70" y1="340" x2="450" y2="340" stroke="#232d3b" stroke-width="2"/>
           <!-- flow path connecting pipeline nodes -->
-          <path d="M90 300 C 150 300, 150 250, 210 250 S 270 190, 320 190 S 380 120, 440 120" fill="none" stroke="#58a6ff" stroke-width="2" stroke-dasharray="2 8" stroke-linecap="round" opacity=".8"/>
+          <path class="pipeline-path" d="M90 300 C 150 300, 150 250, 210 250 S 270 190, 320 190 S 380 120, 440 120" fill="none" stroke="#58a6ff" stroke-width="2" stroke-linecap="round" opacity=".8"/>
           <g font-family="Inter, sans-serif" font-size="11" fill="#aab4c2">
-            <circle cx="90" cy="300" r="6" fill="#0d1117" stroke="#58a6ff" stroke-width="2"/>
+            <circle class="pipeline-node" cx="90" cy="300" r="6" fill="#0d1117" stroke="#58a6ff" stroke-width="2"/>
             <text x="66" y="322">Lead</text>
-            <circle cx="210" cy="250" r="6" fill="#0d1117" stroke="#58a6ff" stroke-width="2"/>
+            <circle class="pipeline-node" cx="210" cy="250" r="6" fill="#0d1117" stroke="#58a6ff" stroke-width="2"/>
             <text x="182" y="272">Qualified</text>
-            <circle cx="320" cy="190" r="6" fill="#0d1117" stroke="#58a6ff" stroke-width="2"/>
+            <circle class="pipeline-node" cx="320" cy="190" r="6" fill="#0d1117" stroke="#58a6ff" stroke-width="2"/>
             <text x="292" y="212">Opportunity</text>
-            <circle cx="440" cy="120" r="7" fill="#58a6ff"/>
+            <circle class="pipeline-node" cx="440" cy="120" r="7" fill="#58a6ff"/>
             <text x="404" y="102" fill="#ffffff" font-weight="700">Closed-Won</text>
           </g>
         </svg>
@@ -236,7 +236,7 @@
     <div class="container">
       <div class="quote-card" style="max-width:760px; margin:0 auto;">
         <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#58a6ff" stroke-width="2" style="margin-bottom:16px;"><path d="M3 21c3-1 6-3 6-8V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2c0 2-1 3-3 4"/><path d="M13 21c3-1 6-3 6-8V7a2 2 0 0 0-2-2h-3a2 2 0 0 0-2 2v4a2 2 0 0 0 2 2h2c0 2-1 3-3 4"/></svg>
-        <p>"Most teams don't need more leads — they need to stop losing the ones they already have. That's the gap we build for: a system that turns chaos into clarity, so a lead never sits unclaimed and a deal never closes on a handshake alone."</p>
+        <p class="scroll-highlight">"Most teams don't need more leads — they need to stop losing the ones they already have. That's the gap we build for: a system that turns chaos into clarity, so a lead never sits unclaimed and a deal never closes on a handshake alone."</p>
         <div class="quote-person">
           <span class="quote-avatar">JU</span>
           <div>
@@ -310,6 +310,9 @@
   </div>
 </footer>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="js/main.js"></script>
+<script src="js/motion.js"></script>
 </body>
 </html>
