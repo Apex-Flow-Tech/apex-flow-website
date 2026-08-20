@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const status = document.querySelector('#form-status');
       if (status) {
-        status.textContent = 'Thanks — this form is a static demo and isn’t wired to send yet. Connect it to your email/CRM endpoint to go live.';
+        status.textContent = 'Thanks. This form is a static demo and isn’t wired to send yet. Connect it to your email/CRM endpoint to go live.';
         status.style.display = 'block';
       }
     });
