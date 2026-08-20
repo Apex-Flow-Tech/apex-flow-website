@@ -122,13 +122,11 @@ section{ padding:96px 0; }
 }
 .brand{ display:flex; align-items:center; gap:10px; }
 .brand-mark{
-  width:34px; height:34px;
-  border-radius:8px;
-  overflow:hidden;
-  background:var(--navy);
+  height:30px; width:auto;
+  display:flex; align-items:center;
   flex:none;
 }
-.brand-mark img{ width:100%; height:100%; object-fit:cover; }
+.brand-mark img{ height:100%; width:auto; object-fit:contain; display:block; }
 .brand-word{
   font-family:var(--font-head);
   font-weight:700;
