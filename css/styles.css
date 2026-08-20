@@ -48,8 +48,9 @@ p{ margin:0 0 1em; color:var(--ink-2); }
 .container{
   width:100%;
   margin:0;
-  padding:0;
+  padding:0 16px;
 }
+@media (min-width:640px){ .container{ padding:0 24px; } }
 section{ padding:96px 0; }
 @media (max-width:720px){ section{ padding:64px 0; } }
 
