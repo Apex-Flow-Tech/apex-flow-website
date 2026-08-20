@@ -23,7 +23,8 @@
 }
 
 *,*::before,*::after{ box-sizing:border-box; }
-html{ scroll-behavior:smooth; }
+/* Scroll smoothing is handled by Lenis (js/motion.js); native smooth-scroll
+   would fight it, so it's intentionally left off here. */
 body{
   margin:0;
   background:var(--navy);
