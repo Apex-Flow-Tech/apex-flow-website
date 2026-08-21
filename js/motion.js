@@ -31,12 +31,20 @@ document.addEventListener('DOMContentLoaded', () => {
       const { reduce, canHover } = context.conditions;
 
       // ---- Grid stagger reveal ----
+      // Opacity-only: .card/.pricing-card also get an independent GSAP
+      // transform controller below (3D tilt). Two separate GSAP tweens
+      // both writing to `transform` on the same element (this reveal's
+      // `y`, and the tilt's rotationX/rotationY/z) fight over GSAP's
+      // internal transform cache, and can leave the card permanently
+      // stuck mid-transform (e.g. translateY never resolving to 0).
+      // Animating opacity here instead of y/transform sidesteps that
+      // conflict entirely.
       gsap.utils.toArray('.grid').forEach((grid) => {
         const children = Array.from(grid.children);
         if (!children.length) return;
-        if (reduce) { gsap.set(children, { opacity: 1, y: 0 }); return; }
+        if (reduce) { gsap.set(children, { opacity: 1 }); return; }
         gsap.from(children, {
-          opacity: 0, y: 32, duration: 0.9, stagger: 0.09, ease: 'power3.out',
+          opacity: 0, duration: 0.7, stagger: 0.09, ease: 'power2.out',
           scrollTrigger: { trigger: grid, start: 'top 87%', toggleActions: 'play none none reverse' }
         });
       });
@@ -47,10 +55,16 @@ document.addEventListener('DOMContentLoaded', () => {
         .filter((el) => !el.closest('.grid'));
       standalone.forEach((el) => {
         if (reduce) { gsap.set(el, { opacity: 1, y: 0 }); return; }
-        gsap.from(el, {
-          opacity: 0, y: 34, duration: 1, ease: 'power3.out',
-          scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' }
-        });
+        // .pricing-card also gets the 3D tilt controller (see above) --
+        // same conflict, same fix: opacity only, no y/transform at all
+        // (not even y:0 -- that still registers a transform tween).
+        const isTiltTarget = el.classList.contains('pricing-card');
+        gsap.from(el, isTiltTarget
+          ? { opacity: 0, duration: 1, ease: 'power3.out',
+              scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' } }
+          : { opacity: 0, y: 34, duration: 1, ease: 'power3.out',
+              scrollTrigger: { trigger: el, start: 'top 90%', toggleActions: 'play none none reverse' } }
+        );
       });
 
       // ---- Scroll-scrubbed word highlight ----
