@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Optimizing Pipeline Architecture to Eliminate Lead Leakage | Apex Flow Case Study</title>
+<meta name="description" content="An illustrative Salesforce build: dedicated lead queues, assignment rules, and an approval gate that closes the gap between inbound leads and a governed pipeline.">
+<link rel="canonical" href="https://apexflowspace.com/case-studies/pipeline-lead-leakage.html">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Optimizing Pipeline Architecture to Eliminate Lead Leakage">
+<meta property="og:description" content="An illustrative Salesforce build: dedicated lead queues, assignment rules, and an approval gate that closes the gap between inbound leads and a governed pipeline.">
+<meta property="og:url" content="https://apexflowspace.com/case-studies/pipeline-lead-leakage.html">
+<meta property="og:image" content="https://apexflowspace.com/assets/brand/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="../assets/brand/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../css/styles.css?v=20260821">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": "Optimizing Pipeline Architecture to Eliminate Lead Leakage",
+  "description": "An illustrative Salesforce build: dedicated lead queues, assignment rules, and an approval gate that closes the gap between inbound leads and a governed pipeline.",
+  "author": { "@type": "Organization", "name": "Apex Flow Technology Group" },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Apex Flow Technology Group",
+    "logo": { "@type": "ImageObject", "url": "https://apexflowspace.com/assets/brand/favicon.png" }
+  },
+  "mainEntityOfPage": "https://apexflowspace.com/case-studies/pipeline-lead-leakage.html",
+  "datePublished": "2026-08-21"
+}
+</script>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="../index.html" class="brand">
+      <span class="brand-mark"><img src="../assets/brand/mark-transparent.png" alt="Apex Flow mark"></span>
+      <span class="brand-word">Apex Flow</span>
+    </a>
+    <nav class="nav-links">
+      <a href="../index.html#services">Services</a>
+      <a href="../process.html">How We Work</a>
+      <a href="../pricing.html">Pricing</a>
+      <a href="../case-studies.html" class="active">Case Studies</a>
+      <a href="../blog.html">Blog</a>
+      <a href="../about.html">About</a>
+      <a href="../contact.html" class="nav-link-cta btn btn-primary">Book a Strategy Call</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="../contact.html" class="btn btn-ghost">Contact</a>
+      <a href="../contact.html" class="btn btn-primary">Book a Strategy Call</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="article-hero">
+    <div class="container">
+      <div class="post-meta"><span class="tag-pill">Illustrative</span><span>&middot;</span><span>Sales Cloud &amp; Automation</span><span>&middot;</span><span>7 min read</span></div>
+      <h1>Optimizing Pipeline Architecture to Eliminate Lead Leakage</h1>
+      <p class="lead">A composite build, worked through in detail based on real, recurring patterns we see in growing B2B teams. Not a completed client engagement, and labeled honestly as one rather than presented as finished work.</p>
+    </div>
+  </section>
+
+  <article class="article-body">
+    <div class="container" style="max-width:720px; padding:0;">
+
+      <h2>The Situation</h2>
+      <p>A composite, typical of a growing B2B team past the point where a spreadsheet or shared inbox can keep up: inbound leads arriving from a handful of channels with no consistent routing, reps working whichever lead happens to catch their eye first, some prospects followed up with twice by two different people, others never followed up at all because nobody technically owned them. By the time anyone tries to answer "which channel is actually converting," the answer requires manually cross-referencing three sources that don't agree.</p>
+
+      <h2>The Architecture</h2>
+      <p>Built on Salesforce Sales Cloud, structured around a dedicated Lead queue with Assignment Rules routing incoming leads by source and territory the moment they land, so nothing sits unclaimed waiting for someone to notice it. Source and campaign fields are captured on the Lead record itself at intake, so channel performance is visible before a single lead converts, not reconstructed after the fact from whichever tool still has the data.</p>
+      <p>Qualified leads move through a single, standard Lead Conversion into a clean Account, Contact, and Opportunity, with no custom conversion logic layered on top to maintain later. From there, every Opportunity follows the same fixed path: Discovery, then Proposal Sent, then Negotiation. An Approval Process gates the move to "Pending Sign-Off," so a deal can't slide into Closed-Won without a formal sign-off, and the record locks the moment it's approved, closing off the silent-edit problem that comes with running a pipeline on an honor system.</p>
+
+      <h2>What This Would Change</h2>
+      <p>Framed as expected outcomes of the architecture, not measured results of a real engagement: no lead sits unclaimed long enough for a prospect to go cold. Two reps stop working the same lead without knowing it, since ownership is explicit the moment a lead is routed. And the team gets a real, standing answer to which channel is actually generating pipeline, instead of a guess reconstructed once a quarter.</p>
+
+      <blockquote>Ownership becomes explicit the moment a lead is routed, not something reconstructed after a deal falls through.</blockquote>
+
+      <p>This is the same architecture described in more detail on our <a href="../process.html">five-stage build pipeline</a>: a dedicated intake queue, a fixed conversion and deal path, and governance at the point of closing.</p>
+
+      <div class="article-cta">
+        <p>Recognize this pattern in your own pipeline?</p>
+        <a href="../contact.html" class="btn btn-primary">Book a Strategy Call</a>
+      </div>
+
+    </div>
+  </article>
+
+  <section id="cta" style="padding-top:0;">
+    <div class="container">
+      <div class="section-head">
+        <span class="eyebrow">More Case Studies</span>
+        <h2 style="font-size:1.6rem;">Other illustrative builds.</h2>
+      </div>
+      <div class="grid grid-2">
+        <a href="donor-partner-reconciliation.html" class="card">
+          <h3>Reconciling Multi-Branch Donor &amp; Partner Data Across a National NGO Network</h3>
+          <p>A Salesforce NPSP build for organizations reporting across disconnected branches.</p>
+        </a>
+        <a href="grant-milestone-compliance.html" class="card">
+          <h3>Milestone-Gated Fund Release for a Multi-Country Grant Cycle</h3>
+          <p>An approval-gated disbursement system for grant and fellowship programs.</p>
+        </a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="../index.html" class="brand">
+          <span class="brand-mark"><img src="../assets/brand/mark-transparent.png" alt="Apex Flow mark"></span>
+          <span class="brand-word">Apex Flow</span>
+        </a>
+        <p>CRM architecture and process automation for B2B teams outgrowing spreadsheets.</p>
+        <span class="footer-tagline">Chaos in. Clarity out.</span>
+        <div class="social-row">
+          <a class="social-icon" href="https://www.tiktok.com/@apex.flow2" target="_blank" rel="noopener" aria-label="Apex Flow on TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2c.4 2.4 2 4 4.5 4.2V9c-1.6.1-3-.4-4.5-1.3v6.8a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.9a2.8 2.8 0 1 0 2 2.7V2h2.8z"/></svg></a>
+          <a class="social-icon" href="https://www.instagram.com/apexflow.ops" target="_blank" rel="noopener" aria-label="Apex Flow on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a class="social-icon" href="https://x.com/ApexFlow_ops" target="_blank" rel="noopener" aria-label="Apex Flow on X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.6l-5.2-6.8L5.7 22H2.4l7.7-8.8L1.5 2h6.8l4.7 6.2L18.9 2z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="../about.html">About</a>
+        <a href="../process.html">How We Work</a>
+        <a href="../case-studies.html">Case Studies</a>
+        <a href="../pricing.html">Pricing</a>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="../index.html#services">CRM Architecture</a>
+        <a href="../index.html#services">Pipeline Automation</a>
+        <a href="../index.html#services">Reporting &amp; Dashboards</a>
+        <a href="../index.html#services">Retainer Support</a>
+      </div>
+      <div class="footer-col">
+        <h4>Get In Touch</h4>
+        <a href="../contact.html">Contact Us</a>
+        <a href="../contact.html">Book a Strategy Call</a>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Apex Flow Technology Group. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="../js/main.js?v=20260821"></script>
+<script src="../js/motion.js?v=20260821"></script>
+</body>
+</html>
