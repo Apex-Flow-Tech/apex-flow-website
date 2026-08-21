@@ -442,10 +442,11 @@ section{ padding:96px 0; }
 .stat-card span{ font-size:13.5px; color:var(--ink-3); }
 
 .page-hero{
-  padding:64px 0 56px;
+  padding:64px 0 0;
   border-bottom:1px solid var(--line);
   position:relative;
 }
+.page-hero .container{ padding-bottom:56px; }
 .page-hero::before{
   content:"";
   position:absolute; inset:-10% -10% auto -10%; height:340px;
