@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=20260823">
+<link rel="stylesheet" href="css/styles.css?v=20260824">
 </head>
 <body>
 
@@ -104,51 +104,74 @@
 
   <section>
     <div class="container">
-      <div class="process-steps">
+      <div class="section-head center">
+        <span class="eyebrow">Five Fixed Stages</span>
+        <h2>Every build follows the same sequence.</h2>
+      </div>
 
-        <div class="process-step">
-          <div class="num">01</div>
-          <div>
-            <span class="tag">Lead Capture &amp; Qualification</span>
-            <h3>Every lead lands in one queue, automatically.</h3>
-            <p>We configure a dedicated intake queue and assignment rules so web and campaign leads route in without manual sorting. Source and channel are tagged on the way in, so your team knows what's working before they ever pick up the phone. A qualification bar keeps the pipeline honest, so nothing moves forward on a hunch.</p>
-          </div>
+      <div class="process-timeline" aria-hidden="true">
+        <div class="tl-node">01</div><div class="tl-line"></div>
+        <div class="tl-node">02</div><div class="tl-line"></div>
+        <div class="tl-node">03</div><div class="tl-line"></div>
+        <div class="tl-node">04</div><div class="tl-line"></div>
+        <div class="tl-node">05</div>
+      </div>
+
+      <div class="process-grid">
+
+        <div class="process-card">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8" cy="8" r="1.4" fill="currentColor" stroke="none"/><circle cx="16" cy="16" r="1.4" fill="currentColor" stroke="none"/><path d="M8 8 L16 16" stroke-dasharray="2 2"/></svg></div>
+          <h3>Lead Capture &amp; Qualification</h3>
+          <span class="subhead">Every lead lands in one queue, automatically.</span>
+          <ul class="check-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Dedicated intake queue</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Automatic assignment rules</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Source &amp; channel tagged at intake</li>
+          </ul>
         </div>
 
-        <div class="process-step">
-          <div class="num">02</div>
-          <div>
-            <span class="tag">Lead Conversion</span>
-            <h3>One action, three clean records.</h3>
-            <p>Converting a qualified lead generates an Account, Contact, and Opportunity in a single, standard action, with no custom conversion logic to maintain or break. From there, every deal moves through the same fixed path: Discovery → Proposal Sent → Negotiation.</p>
-          </div>
+        <div class="process-card">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="5" r="2.4"/><path d="M12 7.4V11"/><path d="M6 17v-4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v4"/><rect x="4" y="17" width="6" height="4" rx="1"/><rect x="14" y="17" width="6" height="4" rx="1"/></svg></div>
+          <h3>Lead Conversion</h3>
+          <span class="subhead">One action, three clean records.</span>
+          <ul class="check-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Account, Contact &amp; Opportunity created</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>No custom conversion logic</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Standard deal path: Discovery → Proposal Sent → Negotiation</li>
+          </ul>
         </div>
 
-        <div class="process-step">
-          <div class="num">03</div>
-          <div>
-            <span class="tag">Closing &amp; Governance</span>
-            <h3>Nothing closes without a sign-off.</h3>
-            <p>An approval process sits on every Opportunity. Moving a deal to "Pending Sign-Off" triggers an automated approval request, and on approval, the deal auto-marks Closed-Won and locks. No silent edits after the fact, no deals that quietly slip through.</p>
-          </div>
+        <div class="process-card">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></div>
+          <h3>Closing &amp; Governance</h3>
+          <span class="subhead">Nothing closes without a sign-off.</span>
+          <ul class="check-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Approval process on every Opportunity</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>"Pending Sign-Off" triggers approval request</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>On approval, auto Closed-Won &amp; locked</li>
+          </ul>
         </div>
 
-        <div class="process-step">
-          <div class="num">04</div>
-          <div>
-            <span class="tag">Delivery &amp; Onboarding</span>
-            <h3>The moment a deal closes, delivery starts itself.</h3>
-            <p>A closed-won deal automatically spins up a delivery record connected to the account, with no manual handoff email required. Every existing client data source gets inventoried, field names and statuses get standardized before migration, and duplicates never make the trip. Legacy documents move to cloud storage and get linked, not uploaded, keeping the system light and fast.</p>
-          </div>
+        <div class="process-card">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-1-7.87A5 5 0 0 1 15.9 8H16a4 4 0 0 1 1 7.87"/><path d="M12 12v7M9.5 14.5 12 12l2.5 2.5"/></svg></div>
+          <h3>Delivery &amp; Onboarding</h3>
+          <span class="subhead">The moment a deal closes, delivery starts itself.</span>
+          <ul class="check-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Delivery record auto-created &amp; linked to account</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Data inventoried, fields &amp; statuses standardized</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>De-duplicated; documents linked from cloud storage</li>
+          </ul>
         </div>
 
-        <div class="process-step">
-          <div class="num">05</div>
-          <div>
-            <span class="tag">Retainer &amp; System Health</span>
-            <h3>The system stays healthy after we hand it over.</h3>
-            <p>Once a build ships, ownership shifts to ongoing care: a monthly system health check, a workflow audit to patch broken automations before they cause damage, and a data integrity pass. Support tickets are triaged inside a 24-hour SLA, with anything touching account health escalated immediately, never resolved as a one-off.</p>
-          </div>
+        <div class="process-card">
+          <div class="icon-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="13" rx="2"/><path d="M6 10h3l1.5-3 2 6 1.5-3H18"/><path d="M8 21h8M12 17v4"/></svg></div>
+          <h3>Retainer &amp; System Health</h3>
+          <span class="subhead">The system stays healthy after we hand it over.</span>
+          <ul class="check-list">
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Monthly system health check</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>Workflow audit &amp; automation patching</li>
+            <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>24-hour SLA for support tickets</li>
+          </ul>
         </div>
 
       </div>
@@ -157,26 +180,24 @@
 
   <section id="guardrails">
     <div class="container">
-      <div class="section-head">
-        <span class="eyebrow">Built-In Guardrails</span>
-        <h2>The constraints that keep a build honest.</h2>
-        <p>Every Apex Flow system is engineered around the same non-negotiables, regardless of client size.</p>
-      </div>
-      <div class="grid grid-3">
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
-          <h3>Precise license model</h3>
-          <p>Roles are scoped to exactly what each job requires, so you only pay for the seats you actually need, whether that's five or five hundred.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></div>
-          <h3>Storage-aware architecture</h3>
-          <p>We treat storage limits as a hard constraint from day one: brief text notes on records, heavy files linked from cloud storage, never uploaded direct.</p>
-        </div>
-        <div class="card">
-          <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
-          <h3>Documented deviations</h3>
-          <p>If a build has to deviate from the standard, it's written down and flagged before go-live, never left as an undocumented exception.</p>
+      <div class="guardrails-band">
+        <span class="eyebrow eyebrow-center">Built-In Guardrails</span>
+        <div class="guardrails-grid">
+          <div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+            <h3>Precise License Model</h3>
+            <p>Roles are scoped to exactly what each job requires, so you only pay for the seats you actually need, whether that's five or five hundred.</p>
+          </div>
+          <div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3v18h18"/><rect x="7" y="12" width="3" height="6"/><rect x="12" y="8" width="3" height="10"/><rect x="17" y="5" width="3" height="13"/></svg></div>
+            <h3>Storage-Aware Architecture</h3>
+            <p>We treat storage limits as a hard constraint from day one: brief text notes on records, heavy files linked from cloud storage.</p>
+          </div>
+          <div>
+            <div class="icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg></div>
+            <h3>Documented Deviations</h3>
+            <p>If a build has to deviate from the standard, it's written down and flagged before go-live, never left as an undocumented exception.</p>
+          </div>
         </div>
       </div>
     </div>
