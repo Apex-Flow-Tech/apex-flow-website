@@ -9,12 +9,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const form = document.querySelector('#contact-form');
   if (form) {
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const status = document.querySelector('#form-status');
-      if (status) {
-        status.textContent = 'Thanks. This form is a static demo and isn’t wired to send yet. Connect it to your email/CRM endpoint to go live.';
-        status.style.display = 'block';
+      const submitBtn = form.querySelector('button[type="submit"]');
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          body: new FormData(form),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Request failed');
+        form.reset();
+        if (status) {
+          status.style.color = 'var(--blue)';
+          status.textContent = "Thanks, that's in. We reply to strategy call requests within 1 business day.";
+          status.style.display = 'block';
+        }
+      } catch (err) {
+        if (status) {
+          status.style.color = '#e2555a';
+          status.textContent = 'Something went wrong sending that. Please email hello@apexflowspace.com directly and we will get back to you.';
+          status.style.display = 'block';
+        }
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
       }
     });
   }
