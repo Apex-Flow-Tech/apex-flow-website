@@ -7,6 +7,11 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const aboutVideo = document.querySelector('#about-values-video');
+  if (aboutVideo && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    aboutVideo.pause();
+  }
+
   const form = document.querySelector('#contact-form');
   if (form) {
     form.addEventListener('submit', async (e) => {
