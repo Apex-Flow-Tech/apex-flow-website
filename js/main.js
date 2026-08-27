@@ -12,6 +12,28 @@ document.addEventListener('DOMContentLoaded', () => {
     aboutVideo.pause();
   }
 
+  const toolkitForm = document.querySelector('#toolkit-form');
+  if (toolkitForm) {
+    toolkitForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = toolkitForm.querySelector('button[type="submit"]');
+      const downloadBox = document.querySelector('#toolkit-download');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Preparing your download...'; }
+      try {
+        await fetch(toolkitForm.action, {
+          method: 'POST',
+          body: new FormData(toolkitForm),
+          headers: { 'Accept': 'application/json' }
+        });
+      } catch (err) {
+        // Even if lead logging fails, don't block delivery of the toolkit itself.
+      } finally {
+        toolkitForm.style.display = 'none';
+        if (downloadBox) downloadBox.style.display = 'block';
+      }
+    });
+  }
+
   const form = document.querySelector('#contact-form');
   if (form) {
     form.addEventListener('submit', async (e) => {
