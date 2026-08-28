@@ -94,40 +94,53 @@
 
         <div>
           <span class="eyebrow">Apply</span>
-          <h2 style="font-size:clamp(1.8rem,3vw,2.4rem);">Send us your work, not just a resume.</h2>
-          <p>We care more about what you've made than where you went to school. A link to your writing, your social work, or anything Salesforce-adjacent tells us more than a CV ever will.</p>
+          <h2 style="font-size:clamp(1.8rem,3vw,2.4rem);">Send us your resume, and your work.</h2>
+          <p>We care more about what you've made than where you went to school. Along with your resume, a link to your writing, your social work, or anything Salesforce-adjacent tells us more than a CV alone ever will.</p>
           <p style="font-size:13.5px; color:var(--ink-3);">We reply to every application, even if it's a no for now.</p>
         </div>
 
         <div class="card" id="careers-card">
-          <form id="careers-form" action="https://api.sheetmonkey.io/form/kKARMBfdx2GUonE3w1pAmu" method="POST">
+          <form id="careers-form" action="PENDING_CAREERS_APPS_SCRIPT_URL" method="POST">
             <div class="form-grid">
               <div class="form-field">
                 <label for="careers-name">Full name</label>
-                <input type="text" id="careers-name" name="Full name" required>
+                <input type="text" id="careers-name" name="fullName" required>
               </div>
               <div class="form-field">
                 <label for="careers-email">Email</label>
-                <input type="email" id="careers-email" name="Work email" required>
+                <input type="email" id="careers-email" name="email" required>
               </div>
-              <div class="form-field full">
+              <div class="form-field">
+                <label for="careers-phone">Phone</label>
+                <input type="tel" id="careers-phone" name="phone">
+              </div>
+              <div class="form-field">
                 <label for="careers-role">Which role?</label>
-                <select id="careers-role" name="What are you looking for?" required>
+                <select id="careers-role" name="role" required>
                   <option>Content Creation Intern</option>
                   <option>Social Media Manager Intern</option>
                   <option>CRM/Salesforce Support Intern</option>
                 </select>
               </div>
               <div class="form-field full">
-                <label for="careers-portfolio">Link to your work</label>
-                <input type="url" id="careers-portfolio" name="Tell us about your current pipeline" placeholder="Portfolio, LinkedIn, writing samples, socials you've run..." required>
+                <label for="careers-resume">Resume / CV</label>
+                <input type="file" id="careers-resume" name="resume" accept=".pdf,.doc,.docx" required>
+                <span style="font-size:12px; color:var(--ink-3);">PDF or Word, up to 5MB.</span>
               </div>
               <div class="form-field full">
-                <label for="careers-why">Why this role, briefly</label>
-                <textarea id="careers-why" name="Company" rows="3" placeholder="A few lines is plenty."></textarea>
+                <label for="careers-portfolio">LinkedIn or portfolio link</label>
+                <input type="url" id="careers-portfolio" name="linkedin" placeholder="LinkedIn, personal site, writing samples, socials you've run...">
+              </div>
+              <div class="form-field">
+                <label for="careers-availability">Earliest start date</label>
+                <input type="text" id="careers-availability" name="availability" placeholder="e.g. Immediately, or a date">
+              </div>
+              <div class="form-field full">
+                <label for="careers-why">Cover letter / why this role</label>
+                <textarea id="careers-why" name="coverLetter" rows="3" placeholder="A few lines is plenty."></textarea>
               </div>
             </div>
-            <input type="hidden" name="Created" value="x-sheetmonkey-current-date-time">
+            <p id="careers-error" style="display:none; margin:14px 0 0; font-size:13.5px; color:#e2555a;"></p>
             <button type="submit" class="btn btn-primary btn-block" style="margin-top:22px;">Submit Application</button>
           </form>
           <div id="careers-success" style="display:none; text-align:center;">
@@ -205,7 +218,7 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=20260829"></script>
+<script src="js/main.js?v=20260830"></script>
 <script src="js/motion.js?v=20260821"></script>
 </body>
 </html>

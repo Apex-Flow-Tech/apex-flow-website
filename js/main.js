@@ -36,24 +36,77 @@ document.addEventListener('DOMContentLoaded', () => {
 
   const careersForm = document.querySelector('#careers-form');
   if (careersForm) {
+    const MAX_RESUME_BYTES = 5 * 1024 * 1024; // 5MB
+
+    const fileToBase64 = (file) => new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(String(reader.result).split(',')[1] || '');
+      reader.onerror = () => reject(new Error('Could not read the file'));
+      reader.readAsDataURL(file);
+    });
+
     careersForm.addEventListener('submit', async (e) => {
       e.preventDefault();
       const submitBtn = careersForm.querySelector('button[type="submit"]');
       const successBox = document.querySelector('#careers-success');
+      const errorBox = document.querySelector('#careers-error');
+      const resumeInput = document.querySelector('#careers-resume');
+      const resumeFile = resumeInput?.files?.[0];
+
+      if (errorBox) errorBox.style.display = 'none';
+
+      if (resumeFile && resumeFile.size > MAX_RESUME_BYTES) {
+        if (errorBox) {
+          errorBox.textContent = 'That file is over 5MB — please attach a smaller PDF or Word doc.';
+          errorBox.style.display = 'block';
+        }
+        return;
+      }
+
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting...'; }
       try {
+        // This endpoint is a Google Apps Script web app (same pattern as the
+        // contact form): raw JSON body, text/plain header to avoid a CORS
+        // preflight the script doesn't handle. The resume file has to be
+        // base64-encoded client-side since there's no real file-upload
+        // endpoint on a static site — the script decodes it back into a
+        // real file and saves it to Drive.
+        let resumeBase64 = '', resumeFileName = '', resumeMimeType = '';
+        if (resumeFile) {
+          resumeBase64 = await fileToBase64(resumeFile);
+          resumeFileName = resumeFile.name;
+          resumeMimeType = resumeFile.type;
+        }
+
+        const payload = {
+          fullName: document.querySelector('#careers-name')?.value || '',
+          email: document.querySelector('#careers-email')?.value || '',
+          phone: document.querySelector('#careers-phone')?.value || '',
+          role: document.querySelector('#careers-role')?.value || '',
+          linkedin: document.querySelector('#careers-portfolio')?.value || '',
+          availability: document.querySelector('#careers-availability')?.value || '',
+          coverLetter: document.querySelector('#careers-why')?.value || '',
+          resumeBase64, resumeFileName, resumeMimeType
+        };
+
         const res = await fetch(careersForm.action, {
           method: 'POST',
-          body: new FormData(careersForm),
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Request failed');
+        const json = await res.json();
+        if (json.result !== 'success') throw new Error(json.error || 'Request failed');
+
         careersForm.style.display = 'none';
         if (successBox) successBox.style.display = 'block';
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Something went wrong — email hello@apexflowspace.com instead';
+          submitBtn.textContent = 'Submit Application';
+        }
+        if (errorBox) {
+          errorBox.textContent = 'Something went wrong sending that. Please email hello@apexflowspace.com with your resume attached instead.';
+          errorBox.style.display = 'block';
         }
       }
     });
