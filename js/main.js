@@ -20,13 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
       const downloadBox = document.querySelector('#toolkit-download');
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Preparing your download...'; }
       try {
+        // Google Apps Script web app: raw JSON body, text/plain header to
+        // avoid a CORS preflight the script doesn't handle (same pattern
+        // as the contact and careers forms). This one sends the delivery
+        // email itself, immediately, so no separate polling script needed.
+        const payload = {
+          fullName: document.querySelector('#toolkit-name')?.value || '',
+          email: document.querySelector('#toolkit-email')?.value || ''
+        };
         await fetch(toolkitForm.action, {
           method: 'POST',
-          body: new FormData(toolkitForm),
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
         });
       } catch (err) {
-        // Even if lead logging fails, don't block delivery of the toolkit itself.
+        // Even if logging/emailing fails, don't block delivery of the toolkit itself.
       } finally {
         toolkitForm.style.display = 'none';
         if (downloadBox) downloadBox.style.display = 'block';
