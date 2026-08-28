@@ -34,6 +34,31 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  const careersForm = document.querySelector('#careers-form');
+  if (careersForm) {
+    careersForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const submitBtn = careersForm.querySelector('button[type="submit"]');
+      const successBox = document.querySelector('#careers-success');
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting...'; }
+      try {
+        const res = await fetch(careersForm.action, {
+          method: 'POST',
+          body: new FormData(careersForm),
+          headers: { 'Accept': 'application/json' }
+        });
+        if (!res.ok) throw new Error('Request failed');
+        careersForm.style.display = 'none';
+        if (successBox) successBox.style.display = 'block';
+      } catch (err) {
+        if (submitBtn) {
+          submitBtn.disabled = false;
+          submitBtn.textContent = 'Something went wrong — email hello@apexflowspace.com instead';
+        }
+      }
+    });
+  }
+
   const form = document.querySelector('#contact-form');
   if (form) {
     form.addEventListener('submit', async (e) => {
