@@ -67,12 +67,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const submitBtn = form.querySelector('button[type="submit"]');
       if (submitBtn) submitBtn.disabled = true;
       try {
+        // This endpoint is a Google Apps Script web app whose doPost() reads
+        // e.postData.contents as raw JSON, not multipart form data. Sending
+        // Content-Type: text/plain (instead of application/json) keeps this
+        // a CORS "simple request" so the browser doesn't need a preflight
+        // OPTIONS call, which Apps Script web apps don't handle.
+        const payload = {
+          fullName: document.querySelector('#name')?.value || '',
+          workEmail: document.querySelector('#email')?.value || '',
+          company: document.querySelector('#company')?.value || '',
+          teamSize: document.querySelector('#team-size')?.value || '',
+          industry: document.querySelector('#industry')?.value || '',
+          lookingFor: document.querySelector('#interest')?.value || '',
+          pipeline: document.querySelector('#message')?.value || ''
+        };
         const res = await fetch(form.action, {
           method: 'POST',
-          body: new FormData(form),
-          headers: { 'Accept': 'application/json' }
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
         });
-        if (!res.ok) throw new Error('Request failed');
+        const json = await res.json();
+        if (json.result !== 'success') throw new Error(json.error || 'Request failed');
         form.reset();
         if (status) {
           status.style.color = 'var(--blue)';
