@@ -37,7 +37,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Even if logging/emailing fails, don't block delivery of the toolkit itself.
       } finally {
         toolkitForm.style.display = 'none';
-        if (downloadBox) downloadBox.style.display = 'block';
+        if (downloadBox) {
+          downloadBox.style.display = 'block';
+          // Auto-start the download instead of making them click a second
+          // time -- this fires from the same click-derived handler as the
+          // submit, so browsers treat it as a real user-initiated download.
+          const downloadLink = document.querySelector('#toolkit-download-link');
+          if (downloadLink) downloadLink.click();
+        }
       }
     });
   }
