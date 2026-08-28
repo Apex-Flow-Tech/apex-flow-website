@@ -120,8 +120,12 @@ document.addEventListener('DOMContentLoaded', () => {
       }
 
       // ---- 3D tilt on cards (pointer devices only) ----
+      // Excludes any card containing a <form>: continuously rotating the
+      // card under the cursor shifts its buttons just enough that clicks
+      // miss, forcing multiple attempts to submit (real bug reported on
+      // the toolkit download form).
       if (!reduce && canHover) {
-        gsap.utils.toArray('.card, .pricing-card').forEach((card) => {
+        gsap.utils.toArray('.card, .pricing-card').filter((card) => !card.querySelector('form')).forEach((card) => {
           gsap.set(card, { transformPerspective: 700, transformStyle: 'preserve-3d' });
           const rotX = gsap.quickTo(card, 'rotationX', { duration: 0.7, ease: 'power3.out' });
           const rotY = gsap.quickTo(card, 'rotationY', { duration: 0.7, ease: 'power3.out' });
