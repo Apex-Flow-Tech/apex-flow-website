@@ -615,10 +615,9 @@ td{ color:var(--grey); }
 }
 .post-card:hover{ border-color:var(--blue-dim-2); }
 .post-card-art{
-  aspect-ratio:16/9;
   display:block;
   width:100%;
-  object-fit:cover;
+  height:auto;
 }
 .post-card-body{ padding:24px; display:flex; flex-direction:column; flex:1; }
 .post-meta{
