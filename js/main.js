@@ -127,12 +127,89 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Fires the same submission at Salesforce Web-to-Lead, silently, via a
+  // hidden iframe target. Web-to-Lead's servlet doesn't send CORS headers,
+  // so a fetch() here would always reject even on success — a hidden form
+  // POST targeting a same-page iframe is the standard pattern: the browser
+  // navigates the (invisible) iframe instead of the real page, and we never
+  // need to read a response. This runs alongside the Google Sheet log below,
+  // not instead of it, and any failure here is swallowed so it can never
+  // block or break that primary submission path.
+  function submitToSalesforceLead({ fullName, workEmail, company, teamSize, personaValue, lookingFor, pipeline, captchaToken }) {
+    try {
+      let iframe = document.querySelector('#sf-w2l-target');
+      if (!iframe) {
+        iframe = document.createElement('iframe');
+        iframe.id = 'sf-w2l-target';
+        iframe.name = 'sf-w2l-target';
+        iframe.style.display = 'none';
+        document.body.appendChild(iframe);
+      }
+
+      const nameParts = fullName.trim().split(/\s+/);
+      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : nameParts[0] || '';
+      const firstName = nameParts.length > 1 ? nameParts[0] : '';
+
+      const fields = {
+        oid: '00Dbm00000yZbns',
+        retURL: 'https://apexflowspace.com/contact.html',
+        captcha_settings: JSON.stringify({
+          keyname: 'Apex_Flow_Web_to_Lead',
+          fallback: 'true',
+          orgId: '00Dbm00000yZbns',
+          ts: String(Date.now())
+        }),
+        'g-recaptcha-response': captchaToken,
+        first_name: firstName,
+        last_name: lastName,
+        email: workEmail,
+        company: company,
+        Team_Size__c: teamSize,
+        Persona__c: personaValue,
+        Service_Interest__c: lookingFor,
+        description: pipeline,
+        lead_source: 'Web'
+      };
+
+      const sfForm = document.createElement('form');
+      sfForm.action = 'https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8';
+      sfForm.method = 'POST';
+      sfForm.target = 'sf-w2l-target';
+      sfForm.style.display = 'none';
+
+      Object.entries(fields).forEach(([name, value]) => {
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = name;
+        input.value = value || '';
+        sfForm.appendChild(input);
+      });
+
+      document.body.appendChild(sfForm);
+      sfForm.submit();
+      sfForm.remove();
+    } catch (err) {
+      // Best-effort only — never surface this to the visitor.
+    }
+  }
+
   const form = document.querySelector('#contact-form');
   if (form) {
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
       const status = document.querySelector('#form-status');
       const submitBtn = form.querySelector('button[type="submit"]');
+
+      const captchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!captchaToken) {
+        if (status) {
+          status.style.color = '#e2555a';
+          status.textContent = 'Please check the "I\'m not a robot" box before submitting.';
+          status.style.display = 'block';
+        }
+        return;
+      }
+
       if (submitBtn) submitBtn.disabled = true;
       try {
         // This endpoint is a Google Apps Script web app whose doPost() reads
@@ -149,6 +226,16 @@ document.addEventListener('DOMContentLoaded', () => {
           lookingFor: document.querySelector('#interest')?.value || '',
           pipeline: document.querySelector('#message')?.value || ''
         };
+        submitToSalesforceLead({
+          fullName: payload.fullName,
+          workEmail: payload.workEmail,
+          company: payload.company,
+          teamSize: payload.teamSize,
+          personaValue: document.querySelector('#industry')?.value || '',
+          lookingFor: payload.lookingFor,
+          pipeline: payload.pipeline,
+          captchaToken: captchaToken
+        });
         const res = await fetch(form.action, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -170,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
       } finally {
         if (submitBtn) submitBtn.disabled = false;
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
     });
   }
