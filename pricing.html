@@ -17,7 +17,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="css/styles.css?v=20260903">
+<link rel="stylesheet" href="css/styles.css?v=20260915">
 </head>
 <body>
 
@@ -209,6 +209,21 @@
         <a href="contact.html">Book a Strategy Call</a>
       </div>
     </div>
+    <div class="footer-newsletter">
+      <div class="footer-newsletter-copy">
+        <h4>Get updates in your inbox</h4>
+        <p>CRM tips and playbooks for B2B teams. No spam, unsubscribe anytime.</p>
+      </div>
+      <div class="footer-newsletter-form-wrap">
+        <form id="newsletter-form" class="newsletter-form">
+          <input type="text" id="newsletter-name" placeholder="First name" required>
+          <input type="email" id="newsletter-email" placeholder="Email address" required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        <div class="g-recaptcha" style="margin-top:10px;" data-sitekey="6LcRoLwtAAAAAHCXtfp3DCciyOM0YSAqbrWJXOzi"></div>
+        <p id="newsletter-status" style="display:none; font-size:13px; margin-top:8px;"></p>
+      </div>
+    </div>
     <div class="footer-bottom">
       <span>© 2026 Apex Flow Technology Group. All rights reserved.</span>
       <div class="footer-legal">
@@ -222,7 +237,8 @@
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="js/main.js?v=20260902"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="js/main.js?v=20260915c"></script>
 <script src="js/motion.js?v=20260901"></script>
 </body>
 </html>

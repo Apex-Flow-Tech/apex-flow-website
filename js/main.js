@@ -18,6 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
       e.preventDefault();
       const submitBtn = toolkitForm.querySelector('button[type="submit"]');
       const downloadBox = document.querySelector('#toolkit-download');
+      const errorEl = document.querySelector('#toolkit-error');
+
+      const captchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!captchaToken) {
+        if (errorEl) {
+          errorEl.textContent = 'Please check the "I\'m not a robot" box before submitting.';
+          errorEl.style.display = 'block';
+        }
+        return;
+      }
+      if (errorEl) errorEl.style.display = 'none';
+
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Preparing your download...'; }
       try {
         // Google Apps Script web app: raw JSON body, text/plain header to
@@ -28,6 +40,19 @@ document.addEventListener('DOMContentLoaded', () => {
           fullName: document.querySelector('#toolkit-name')?.value || '',
           email: document.querySelector('#toolkit-email')?.value || ''
         };
+
+        const { firstName, lastName } = splitFullName_(payload.fullName);
+        submitToSalesforceWebToLead(Object.assign({
+          oid: '00Dbm00000yZbns',
+          retURL: 'https://apexflowspace.com/toolkit.html',
+          first_name: firstName,
+          last_name: lastName,
+          email: payload.email,
+          company: companyFromEmail_(payload.email),
+          lead_source: 'Web',
+          Web_Source__c: 'Resource Download'
+        }, salesforceCaptchaSettings_(captchaToken)));
+
         await fetch(toolkitForm.action, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },
@@ -45,7 +70,54 @@ document.addEventListener('DOMContentLoaded', () => {
           const downloadLink = document.querySelector('#toolkit-download-link');
           if (downloadLink) downloadLink.click();
         }
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
+    });
+  }
+
+  const newsletterForm = document.querySelector('#newsletter-form');
+  if (newsletterForm) {
+    newsletterForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const status = document.querySelector('#newsletter-status');
+      const submitBtn = newsletterForm.querySelector('button[type="submit"]');
+
+      const captchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!captchaToken) {
+        if (status) {
+          status.style.color = '#e2555a';
+          status.textContent = 'Please check the "I\'m not a robot" box before subscribing.';
+          status.style.display = 'block';
+        }
+        return;
+      }
+
+      const fullName = document.querySelector('#newsletter-name')?.value || '';
+      const email = document.querySelector('#newsletter-email')?.value || '';
+      const { firstName, lastName } = splitFullName_(fullName);
+
+      submitToSalesforceWebToLead(Object.assign({
+        oid: '00Dbm00000yZbns',
+        retURL: window.location.href,
+        first_name: firstName,
+        last_name: lastName,
+        email: email,
+        company: companyFromEmail_(email),
+        lead_source: 'Web',
+        Web_Source__c: 'Newsletter'
+      }, salesforceCaptchaSettings_(captchaToken)));
+
+      // Web-to-Lead gives us no response to await, so treat the hidden
+      // submission as immediately successful from the visitor's side.
+      if (submitBtn) submitBtn.disabled = true;
+      newsletterForm.reset();
+      if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+      if (status) {
+        status.style.color = 'var(--blue)';
+        status.textContent = "You're subscribed. Thanks for signing up.";
+        status.style.display = 'block';
+      }
+      if (submitBtn) submitBtn.disabled = false;
     });
   }
 
@@ -127,15 +199,35 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // Fires the same submission at Salesforce Web-to-Lead, silently, via a
-  // hidden iframe target. Web-to-Lead's servlet doesn't send CORS headers,
-  // so a fetch() here would always reject even on success — a hidden form
-  // POST targeting a same-page iframe is the standard pattern: the browser
-  // navigates the (invisible) iframe instead of the real page, and we never
-  // need to read a response. This runs alongside the Google Sheet log below,
-  // not instead of it, and any failure here is swallowed so it can never
-  // block or break that primary submission path.
-  function submitToSalesforceLead({ fullName, workEmail, company, teamSize, personaValue, lookingFor, pipeline, captchaToken }) {
+  // Splits a single "Full Name" input into Web-to-Lead's separate
+  // first_name/last_name fields. Salesforce requires last_name; if only
+  // one word was entered, it all goes there and first_name stays blank.
+  function splitFullName_(fullName) {
+    const parts = (fullName || '').trim().split(/\s+/).filter(Boolean);
+    if (parts.length === 0) return { firstName: '', lastName: '' };
+    if (parts.length === 1) return { firstName: '', lastName: parts[0] };
+    return { firstName: parts[0], lastName: parts.slice(1).join(' ') };
+  }
+
+  // Lead.Company is required by Salesforce. Forms that don't collect a
+  // company (toolkit download, newsletter) fall back to the email's
+  // domain rather than submitting a blank value the Lead would reject.
+  function companyFromEmail_(email) {
+    const domain = (email || '').split('@')[1];
+    return domain || 'Unknown';
+  }
+
+  // Fires a submission at Salesforce Web-to-Lead, silently, via a hidden
+  // iframe target. Web-to-Lead's servlet doesn't send CORS headers, so a
+  // fetch() here would always reject even on success — a hidden form POST
+  // targeting a same-page iframe is the standard pattern: the browser
+  // navigates the (invisible) iframe instead of the real page, and we
+  // never need to read a response. This runs alongside each form's
+  // existing Google Sheet log, not instead of it, and any failure here is
+  // swallowed so it can never block or break that primary submission path.
+  // `fields` is the full set of Web-to-Lead field name/value pairs for
+  // this submission (oid/retURL/captcha_settings included by the caller).
+  function submitToSalesforceWebToLead(fields) {
     try {
       let iframe = document.querySelector('#sf-w2l-target');
       if (!iframe) {
@@ -145,31 +237,6 @@ document.addEventListener('DOMContentLoaded', () => {
         iframe.style.display = 'none';
         document.body.appendChild(iframe);
       }
-
-      const nameParts = fullName.trim().split(/\s+/);
-      const lastName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : nameParts[0] || '';
-      const firstName = nameParts.length > 1 ? nameParts[0] : '';
-
-      const fields = {
-        oid: '00Dbm00000yZbns',
-        retURL: 'https://apexflowspace.com/contact.html',
-        captcha_settings: JSON.stringify({
-          keyname: 'Apex_Flow_Web_to_Lead',
-          fallback: 'true',
-          orgId: '00Dbm00000yZbns',
-          ts: String(Date.now())
-        }),
-        'g-recaptcha-response': captchaToken,
-        first_name: firstName,
-        last_name: lastName,
-        email: workEmail,
-        company: company,
-        Team_Size__c: teamSize,
-        Persona__c: personaValue,
-        Service_Interest__c: lookingFor,
-        description: pipeline,
-        lead_source: 'Web'
-      };
 
       const sfForm = document.createElement('form');
       sfForm.action = 'https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8';
@@ -191,6 +258,18 @@ document.addEventListener('DOMContentLoaded', () => {
     } catch (err) {
       // Best-effort only — never surface this to the visitor.
     }
+  }
+
+  function salesforceCaptchaSettings_(captchaToken) {
+    return {
+      captcha_settings: JSON.stringify({
+        keyname: 'Apex_Flow_Web_to_Lead',
+        fallback: 'true',
+        orgId: '00Dbm00000yZbns',
+        ts: String(Date.now())
+      }),
+      'g-recaptcha-response': captchaToken
+    };
   }
 
   const form = document.querySelector('#contact-form');
@@ -226,16 +305,23 @@ document.addEventListener('DOMContentLoaded', () => {
           lookingFor: document.querySelector('#interest')?.value || '',
           pipeline: document.querySelector('#message')?.value || ''
         };
-        submitToSalesforceLead({
-          fullName: payload.fullName,
-          workEmail: payload.workEmail,
-          company: payload.company,
-          teamSize: payload.teamSize,
-          personaValue: document.querySelector('#industry')?.value || '',
-          lookingFor: payload.lookingFor,
-          pipeline: payload.pipeline,
-          captchaToken: captchaToken
-        });
+        {
+          const { firstName, lastName } = splitFullName_(payload.fullName);
+          submitToSalesforceWebToLead(Object.assign({
+            oid: '00Dbm00000yZbns',
+            retURL: 'https://apexflowspace.com/contact.html',
+            first_name: firstName,
+            last_name: lastName,
+            email: payload.workEmail,
+            company: payload.company,
+            Team_Size__c: payload.teamSize,
+            Persona__c: document.querySelector('#industry')?.value || '',
+            Service_Interest__c: payload.lookingFor,
+            description: payload.pipeline,
+            lead_source: 'Web',
+            Web_Source__c: 'Contact Form'
+          }, salesforceCaptchaSettings_(captchaToken)));
+        }
         const res = await fetch(form.action, {
           method: 'POST',
           headers: { 'Content-Type': 'text/plain;charset=utf-8' },

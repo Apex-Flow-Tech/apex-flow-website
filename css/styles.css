@@ -522,6 +522,28 @@ section{ padding:96px 0; }
 }
 .footer-legal{ display:flex; gap:20px; }
 
+.footer-newsletter{
+  display:flex; justify-content:space-between; align-items:flex-start; gap:32px;
+  flex-wrap:wrap;
+  padding:32px 0;
+  border-top:1px solid var(--line);
+}
+.footer-newsletter-copy{ max-width:36ch; }
+.footer-newsletter-copy h4{ font-size:15px; margin-bottom:4px; }
+.footer-newsletter-copy p{ font-size:13.5px; color:var(--ink-3); }
+.footer-newsletter-form-wrap{ flex:1 1 340px; max-width:420px; }
+.newsletter-form{ display:flex; gap:10px; flex-wrap:wrap; }
+.newsletter-form input{
+  flex:1 1 140px;
+  padding:10px 14px;
+  border:1px solid var(--line);
+  border-radius:8px;
+  font-size:14px;
+  background:var(--bg);
+  color:var(--ink);
+}
+.newsletter-form button{ flex:0 0 auto; padding:10px 20px; }
+
 /* ---------- Misc components ---------- */
 .badge-row{ display:flex; flex-wrap:wrap; gap:12px; }
 .mini-badge{
