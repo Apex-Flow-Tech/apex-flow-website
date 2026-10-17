@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Free Clarity Session: Liberate Your Team from Operational Chaos | Apex Flow</title>
+<meta name="description" content="Technology should liberate your team, not shackle it. Book a free 20-minute Clarity Session and see where operational chaos is costing you.">
+<link rel="canonical" href="https://apexflowspace.com/clarity-session.html">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Technology should liberate your team. Not shackle it.">
+<meta property="og:description" content="Book a free 20-minute Clarity Session. Zero sales pitch. We'll map where your operational chaos is costing you.">
+<meta property="og:url" content="https://apexflowspace.com/clarity-session.html">
+<meta property="og:image" content="https://apexflowspace.com/assets/brand/og-cover.png">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" type="image/png" href="assets/brand/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/styles.css?v=20260915">
+<style>
+/* Clarity Session landing page: page-scoped styles layered on styles.css */
+.lp .container{ max-width:var(--container); margin:0 auto; }
+.lp-tight{ padding:48px 0; }
+.lp-band{ background:var(--surface); border-top:1px solid var(--line); border-bottom:1px solid var(--line); }
+.lp-narrow{ max-width:720px; margin:0 auto; }
+.lp-hero h1{ max-width:16ch; margin-left:auto; margin-right:auto; }
+
+.lp-countdown{
+  max-width:460px; margin:0 auto 32px; padding:18px 24px;
+  background:var(--surface); border:1px solid var(--blue-dim-2); border-radius:var(--radius);
+  box-shadow:0 12px 28px -20px rgba(37,99,235,.35);
+}
+.lp-countdown-label{ font-size:13px; font-weight:600; color:var(--blue); margin-bottom:8px; letter-spacing:.02em; }
+.lp-countdown-row{ display:flex; justify-content:center; align-items:center; gap:14px; }
+.lp-countdown-row div{ min-width:56px; }
+.lp-countdown-row strong{ display:block; font-family:var(--font-head); font-size:30px; line-height:1.1; color:var(--ink); font-variant-numeric:tabular-nums; }
+.lp-countdown-row span{ font-size:11px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); }
+.lp-countdown-row b{ color:var(--blue); opacity:.5; font-size:22px; }
+
+.lp-table{ padding:8px; }
+.lp-table th{ background:var(--paper); }
+.lp-table td{ vertical-align:top; padding:20px 16px; }
+.lp-table td:first-child{ color:var(--ink); font-weight:600; width:42%; }
+.lp-table tr:last-child td{ border-bottom:0; }
+
+.lp-manifesto{
+  max-width:820px; margin:0 auto; padding:48px;
+  background:linear-gradient(160deg, var(--navy-3), var(--navy)); border-radius:20px;
+  border-left:4px solid var(--sky);
+}
+.lp-manifesto blockquote{ margin:0 0 24px; font-family:var(--font-head); font-size:clamp(1.3rem,2.4vw,1.7rem); line-height:1.3; color:var(--white); }
+.lp-manifesto p{ color:rgba(255,255,255,.78); font-size:16px; }
+@media (max-width:640px){ .lp-manifesto{ padding:28px 22px; } }
+
+.lp-example{ display:flex; flex-direction:column; }
+.lp-example .tag-pill{ align-self:flex-start; margin-bottom:14px; }
+.lp-example h3{ font-size:22px; margin-bottom:14px; }
+.lp-example h4{ font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--blue); margin:14px 0 4px; }
+.lp-example p{ margin-bottom:0; }
+.card .lp-question{
+  margin-top:auto; padding:16px; border-radius:var(--radius-sm);
+  background:var(--blue-dim); color:var(--ink); font-style:italic; font-size:14px;
+}
+.lp-example h4 + p + h4 + p + h4 + p{ margin-bottom:20px; }
+
+.lp-accent{ border-left:3px solid var(--blue); }
+.lp-truth{
+  margin-top:28px; padding:28px; border-radius:var(--radius); text-align:center;
+  background:var(--navy);
+}
+.lp-truth p{ margin:0; color:var(--white); font-size:17px; font-style:italic; }
+.lp-truth strong{ color:var(--sky); font-style:normal; }
+
+.lp-show{
+  padding:32px; border-radius:var(--radius);
+  background:linear-gradient(135deg, #2f6fea, #1d4fc4); color:var(--white);
+}
+.lp-show h3{ color:var(--white); font-size:20px; margin-bottom:16px; }
+.lp-show li{ position:relative; padding-left:28px; margin-bottom:12px; color:rgba(255,255,255,.92); }
+.lp-show li::before{ content:"→"; position:absolute; left:0; font-weight:700; }
+.lp-show li:last-child{ margin-bottom:0; }
+
+.lp-path{ display:flex; flex-direction:column; }
+.lp-path .tag-pill{ align-self:flex-start; margin-bottom:14px; }
+.lp-path h3{ font-size:22px; }
+.card .lp-path-lead{ color:var(--ink); font-weight:600; font-size:15.5px; margin:6px 0 8px; }
+.lp-path h4{ font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-3); margin:18px 0 10px; }
+.lp-path > p:not(.lp-path-lead){ margin-bottom:12px; }
+.lp-timeline{
+  margin:auto 0 18px; padding:12px 16px; border-left:3px solid var(--blue);
+  background:var(--paper); border-radius:var(--radius-sm);
+  font-family:var(--font-head); font-weight:700; color:var(--ink); font-size:15px;
+}
+
+.lp-checks{ display:flex; flex-direction:column; gap:10px; margin-bottom:16px; }
+.lp-checks li{ position:relative; padding-left:26px; font-size:14.5px; color:var(--ink-2); }
+.lp-checks li::before{ content:"✓"; position:absolute; left:0; color:var(--blue); font-weight:700; }
+
+.lp-session{
+  max-width:900px; margin:0 auto; padding:44px;
+  background:linear-gradient(160deg, var(--navy-3), var(--navy)); border-radius:20px; color:var(--white);
+}
+.lp-session h3{ color:var(--sky); font-size:clamp(1.3rem,2.4vw,1.6rem); }
+.lp-session h4{ color:var(--sky); font-size:16px; margin-bottom:12px; }
+.lp-arrows li{ position:relative; padding-left:24px; margin-bottom:12px; color:rgba(255,255,255,.85); }
+.lp-arrows li::before{ content:"▸"; position:absolute; left:0; color:var(--sky); }
+.lp-leave{ margin-top:28px; padding:22px; border-radius:var(--radius); background:rgba(255,255,255,.07); }
+.lp-leave h4{ color:var(--white); }
+.lp-leave p{ margin:0; color:rgba(255,255,255,.85); }
+@media (max-width:640px){ .lp-session{ padding:28px 22px; } }
+
+.lp-metrics{ display:grid; gap:20px; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); }
+.lp-metric{ text-align:center; }
+.lp-metric span{ display:block; font-size:11.5px; font-weight:700; letter-spacing:.08em; text-transform:uppercase; color:var(--ink-3); margin-bottom:12px; }
+.lp-metric strong{ display:block; font-family:var(--font-head); font-size:24px; color:var(--blue); margin-bottom:10px; line-height:1.2; }
+
+.lp-setup{ border:0; padding:0; margin:0; display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+.lp-setup legend{ font-size:13px; font-weight:600; color:var(--ink-2); margin-bottom:8px; padding:0; }
+.lp-setup label{
+  display:flex; align-items:center; gap:10px; cursor:pointer;
+  padding:12px 14px; border:1px solid var(--line); border-radius:10px; background:var(--paper);
+  font-weight:500; color:var(--ink);
+}
+.lp-setup label:has(input:checked){ border-color:var(--blue); background:var(--blue-dim); }
+.lp-setup input{ width:16px; height:16px; accent-color:var(--blue); margin:0; }
+@media (max-width:640px){ .lp-setup{ grid-template-columns:1fr; } }
+
+.lp-trust{
+  max-width:980px; margin:0 auto; padding:36px;
+  background:var(--surface); border:1px solid var(--line); border-radius:20px; text-align:center;
+}
+.lp-trust h3{ margin-bottom:24px; }
+.lp-trust .lp-checks{ display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:18px; text-align:left; margin:0; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container nav">
+    <a href="index.html" class="brand">
+      <span class="brand-mark"><img src="assets/brand/mark-transparent.png" alt="Apex Flow mark"></span>
+      <span class="brand-word">Apex Flow</span>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html#services">Services</a>
+      <a href="process.html">How We Work</a>
+      <a href="pricing.html">Pricing</a>
+      <a href="case-studies.html">Case Studies</a>
+      <a href="blog.html">Blog</a>
+      <a href="about.html">About</a>
+          <a href="contact.html" class="nav-link-cta btn btn-primary">Book a Strategy Call</a>
+    </nav>
+    <div class="nav-cta">
+      <a href="contact.html" class="btn btn-primary">Book a Strategy Call</a>
+      <button class="nav-toggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<main class="lp">
+  <section class="hero lp-hero">
+    <div class="container" style="position:relative; text-align:center;">
+      <span class="eyebrow">Free Clarity Session</span>
+      <h1>Technology should liberate your team.<br><span class="accent">Not shackle it.</span></h1>
+      <p class="hero-lead" style="margin:0 auto 32px;">See what's possible when operational chaos is solved.</p>
+
+      <div class="lp-countdown" aria-live="off">
+        <p class="lp-countdown-label">100 Free Clarity Sessions Available</p>
+        <div class="lp-countdown-row">
+          <div><strong id="countdown-days">00</strong><span>Days</span></div>
+          <b>:</b>
+          <div><strong id="countdown-hours">00</strong><span>Hours</span></div>
+          <b>:</b>
+          <div><strong id="countdown-minutes">00</strong><span>Mins</span></div>
+          <b>:</b>
+          <div><strong id="countdown-seconds">00</strong><span>Secs</span></div>
+        </div>
+      </div>
+
+      <div class="hero-actions" style="justify-content:center;">
+        <a href="#booking-form" class="btn btn-primary">Book Your Free Clarity Session</a>
+        <a href="#pathways" class="btn btn-ghost">See How We Work</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-tight">
+    <div class="container">
+      <div class="section-head center">
+        <h2>Software was supposed to liberate your team. What happened?</h2>
+      </div>
+      <div class="card lp-table">
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>The Industry Promise</th><th>Your Daily Reality</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>"Enterprise CRM will give you pipeline clarity and automate your revenue machine."</td><td>Your reps spend Friday nights re-keying notes. Your database is incomplete. Deals slip through cracks.</td></tr>
+              <tr><td>"Our automation platform will save you 20 hours per week."</td><td>You bought three different tools. They don't talk to each other. Your team runs broken workarounds. Data lives in five places.</td></tr>
+              <tr><td>"We'll build your custom integration."</td><td>Your IT consultancy charged ₦500k, took 6 months, left behind brittle code. Your ops team babysits it.</td></tr>
+              <tr><td>"Just implement our best practices."</td><td>Your team doesn't work like the best practice. It works like a growing, chaotic, brilliant organization. The software fights them.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-tight">
+    <div class="container">
+      <div class="lp-manifesto">
+        <blockquote>"Technology should liberate human potential, not shackle it."</blockquote>
+        <p>Most software vendors sell features, objects, and licensing models. We don't.</p>
+        <p>At Apex Flow, we believe your operational stack (CRM, automation, databases, workflows) should conform to how your high-performing teams actually work. Not the other way around.</p>
+        <p style="margin-bottom:0;">We honor the sales leaders, operators, and finance managers who refuse to accept "that's just how software works" as an answer. Your creativity shouldn't be sacrificed for a vendor's roadmap.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Proof From The Continent</span>
+        <h2>Around Africa, teams are unleashing their potential. Here's how.</h2>
+      </div>
+      <div class="grid grid-3">
+        <div class="card lp-example">
+          <span class="tag-pill">Pan-African Tech</span>
+          <h3>Andela</h3>
+          <h4>The problem they faced</h4>
+          <p>Scaling globally. Operations was a bottleneck. Manual processes. Duplicate work across continents.</p>
+          <h4>What they built</h4>
+          <p>Automated onboarding, project matching, performance tracking. Made operations scale without proportional hiring.</p>
+          <h4>The result</h4>
+          <p>Thousands of engineers across Africa. Operations team focused on strategy, not data entry.</p>
+          <p class="lp-question">"If Andela's team can scale to thousands without being buried in admin, why is yours stuck manually processing leads?"</p>
+        </div>
+        <div class="card lp-example">
+          <span class="tag-pill">Nigeria → Global</span>
+          <h3>Flutterwave</h3>
+          <h4>The problem they faced</h4>
+          <p>Payment processing across 34+ African countries. Each market different. Operations could have been a nightmare.</p>
+          <h4>What they built</h4>
+          <p>Automated systems for KYC, settlement, compliance reporting, customer data. Removed manual bottlenecks.</p>
+          <h4>The result</h4>
+          <p>Processes billions in transactions. Team manages complexity through systems, not heroic manual work.</p>
+          <p class="lp-question">"If Flutterwave's team handles 34 markets through systems, your team can handle your client list through a proper CRM."</p>
+        </div>
+        <div class="card lp-example">
+          <span class="tag-pill">Nigeria → Pan-African</span>
+          <h3>Interswitch</h3>
+          <h4>The problem they faced</h4>
+          <p>Early on, every transaction was manual. Every customer inquiry required human routing. Operations was the ceiling on growth.</p>
+          <h4>What they built</h4>
+          <p>Automated verification, customer routing, settlement reconciliation. Removed the human from the repetitive loop.</p>
+          <h4>The result</h4>
+          <p>Handles millions of daily transactions. Operations is a machine, not a struggle.</p>
+          <p class="lp-question">"Interswitch proved operational systems can scale an entire continent. Your team can scale on systems too."</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-band">
+    <div class="container">
+      <div class="section-head center">
+        <h2>Here's what they all learned, and what you need to know.</h2>
+        <p>When operational chaos is solved, three things happen:</p>
+      </div>
+      <div class="grid grid-3">
+        <div class="card lp-accent">
+          <h3>Your best people stop leaving</h3>
+          <p>Talented people leave because they're drowning in busywork, not because they don't love your vision. Fix the chaos. Retention goes up.</p>
+        </div>
+        <div class="card lp-accent">
+          <h3>Your team's creativity unleashes</h3>
+          <p>Without the mental load of "Where is this data?" your team thinks bigger. They see patterns. They spot opportunities. They close deals faster.</p>
+        </div>
+        <div class="card lp-accent">
+          <h3>Growth stops being limited by operations</h3>
+          <p>You don't need to hire 10 new admins to scale. You scale through systems. Your team grows 3x without your overhead growing 3x.</p>
+        </div>
+      </div>
+      <div class="lp-truth">
+        <p><strong>The Hard Truth:</strong> Every team that solved this realized: "We weren't waiting for better people. We were waiting for better systems."</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head center">
+        <h2>You're not different. Your team isn't lazier. Your tools are broken.</h2>
+        <p>Andela, Flutterwave, and Interswitch didn't have smarter people than you. They had better systems.</p>
+      </div>
+      <div class="lp-narrow">
+        <div class="card" style="margin-bottom:24px;">
+          <p style="font-size:16.5px;">Your team is talented. Your market is real. Your potential is there.</p>
+          <p style="font-size:16.5px; color:var(--ink); font-weight:600;">The gap isn't people. It's operational clarity.</p>
+        </div>
+        <div class="lp-show">
+          <h3>In 20 minutes, we'll show you:</h3>
+          <ul>
+            <li>Where your team is losing hours (not because they're slow, because the system is)</li>
+            <li>What operational clarity looks like for teams like yours</li>
+            <li>How to get there (faster than you think)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="pathways" class="lp-band">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Two Pathways</span>
+        <h2>The path depends on where you're starting. The belief is the same.</h2>
+        <p>Your team deserves to spend time on what makes them great, not on fighting software.</p>
+      </div>
+      <div class="grid grid-2">
+        <div class="card lp-path">
+          <span class="tag-pill">Enterprise Path</span>
+          <h3>Already using Salesforce, HubSpot, or similar</h3>
+          <p class="lp-path-lead">Your CRM isn't broken. Your implementation is.</p>
+          <p>You have the tool. You don't have the architecture.</p>
+          <h4>We'll help you:</h4>
+          <ul class="lp-checks">
+            <li>Clean your data</li>
+            <li>Rebuild workflow automation</li>
+            <li>Integrate your systems</li>
+            <li>Train your team</li>
+          </ul>
+          <p><strong>The Outcome:</strong> Reps reclaim 14+ hours per week. Growth isn't limited by operations.</p>
+          <div class="lp-timeline">4–8 weeks to transformation</div>
+          <a href="#booking-form" class="btn btn-primary btn-block">Book Your Audit</a>
+        </div>
+        <div class="card lp-path">
+          <span class="tag-pill">Growing Firms Path</span>
+          <h3>Using spreadsheets, WhatsApp, scattered tools</h3>
+          <p class="lp-path-lead">You don't have a system. You have chaos with good intentions.</p>
+          <p>Your leads live everywhere. When your best agent leaves, the client list walks out.</p>
+          <h4>We'll help you:</h4>
+          <ul class="lp-checks">
+            <li>Build a custom CRM</li>
+            <li>Set up automation</li>
+            <li>Add AI insights</li>
+            <li>Train your team</li>
+          </ul>
+          <p><strong>The Outcome:</strong> Leads owned by the firm. Follow-ups automatic. Renewals never missed.</p>
+          <div class="lp-timeline">2–4 weeks to MVP</div>
+          <a href="#booking-form" class="btn btn-primary btn-block">Book Clarity Session</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="section-head center">
+        <h2>What happens in 20 minutes</h2>
+      </div>
+      <div class="lp-session">
+        <h3>A Clarity Session is not a pitch. It's a conversation.</h3>
+        <div class="grid grid-2" style="margin-top:28px;">
+          <div>
+            <h4>You bring:</h4>
+            <ul class="lp-arrows">
+              <li>Your story (team, chaos, what's costing you)</li>
+              <li>Your current setup (whatever it is)</li>
+              <li>Your biggest bottleneck</li>
+            </ul>
+          </div>
+          <div>
+            <h4>We bring:</h4>
+            <ul class="lp-arrows">
+              <li>Listening without judgment</li>
+              <li>Clarifying questions</li>
+              <li>A map of where you're losing hours</li>
+              <li>Proof it's solvable</li>
+            </ul>
+          </div>
+        </div>
+        <div class="lp-leave">
+          <h4>You leave with:</h4>
+          <p>A clear picture of your operational cost. Proof it's fixable. A concrete next step (if you want one).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-band">
+    <div class="container">
+      <div class="section-head center">
+        <h2>Real teams. Real results.</h2>
+      </div>
+      <div class="lp-metrics">
+        <div class="card lp-metric"><span>Hours lost to admin per rep</span><strong>14 hrs → 2 hrs</strong><p>Reps reclaim 86% of their week</p></div>
+        <div class="card lp-metric"><span>Deals lost to follow-up delays</span><strong>40% → &lt;5%</strong><p>Revenue multiplies without hiring</p></div>
+        <div class="card lp-metric"><span>Time to onboard new rep</span><strong>3 weeks → 3 days</strong><p>Scaling becomes capital-efficient</p></div>
+        <div class="card lp-metric"><span>Data accuracy</span><strong>60% → 95%+</strong><p>Decisions made on truth</p></div>
+        <div class="card lp-metric"><span>Client churn from neglect</span><strong>Regular → Never</strong><p>Revenue becomes predictable</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="booking-form">
+    <div class="container">
+      <div class="section-head center">
+        <span class="eyebrow">Book Your Session</span>
+        <h2>Stop letting broken systems leak revenue.</h2>
+        <p>Book a diagnostic call. Zero sales pitch. We'll map where your operational chaos is costing you.</p>
+      </div>
+      <div class="lp-narrow">
+        <div class="card">
+          <form id="clarity-form" action="https://script.google.com/macros/s/AKfycbwwy0SGJLpnthSaBUnTnf1aZBYVOKRNMTFyLstW0EFmsmjGmI4RgRJ8lmoy07OS1k0s/exec" method="POST">
+            <div class="form-grid">
+              <div class="form-field">
+                <label for="clarity-name">First &amp; Last Name *</label>
+                <input type="text" id="clarity-name" name="fullName" placeholder="Your name" required>
+              </div>
+              <div class="form-field">
+                <label for="clarity-email">Business Email *</label>
+                <input type="email" id="clarity-email" name="email" placeholder="you@company.com" required>
+              </div>
+              <fieldset class="form-field full lp-setup">
+                <legend>Current Setup *</legend>
+                <label><input type="checkbox" name="setup" value="Salesforce"> Salesforce</label>
+                <label><input type="checkbox" name="setup" value="HubSpot"> HubSpot</label>
+                <label><input type="checkbox" name="setup" value="Airtable / Notion"> Airtable / Notion</label>
+                <label><input type="checkbox" name="setup" value="Spreadsheets / WhatsApp"> Spreadsheets / WhatsApp</label>
+              </fieldset>
+              <div class="form-field full">
+                <label for="clarity-bottleneck">Biggest Operational Bottleneck *</label>
+                <select id="clarity-bottleneck" name="bottleneck" required>
+                  <option value="">Select one...</option>
+                  <option>Leads slipping through the cracks</option>
+                  <option>Slow or missed follow-ups</option>
+                  <option>Data scattered across tools</option>
+                  <option>Too much manual data entry</option>
+                  <option>No clear pipeline reporting</option>
+                  <option>Tools that don't talk to each other</option>
+                  <option>Something else</option>
+                </select>
+              </div>
+            </div>
+            <div class="g-recaptcha" style="margin-top:20px;" data-sitekey="6LcRoLwtAAAAAHCXtfp3DCciyOM0YSAqbrWJXOzi"></div>
+            <button type="submit" class="btn btn-primary btn-block" style="margin-top:22px;">Schedule Your Free Session</button>
+            <p id="clarity-status" style="display:none; margin-top:14px; font-size:13.5px;"></p>
+            <p style="font-size:13px; color:var(--ink-3); margin:14px 0 0; text-align:center;">We'll send you a calendar link via email within 24 hours. No spam. No follow-up calls (unless you ask).</p>
+          </form>
+        </div>
+        <p style="text-align:center; font-size:14px; margin-top:20px;">Can't find a time that works? <a href="mailto:hello@apexflowspace.com" style="color:var(--blue); font-weight:600;">Email us directly</a> and we'll make it work.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="lp-tight">
+    <div class="container">
+      <div class="lp-trust">
+        <h3>You're in good hands.</h3>
+        <ul class="lp-checks">
+          <li>Built systems for real teams across Nigeria, Kenya, and Ghana</li>
+          <li>Team includes certified architects and automation engineers</li>
+          <li>We work on retainers, not hourly rates (our incentive aligns with your success)</li>
+          <li>Pricing in Naira (dollar-priced SaaS won't work for growing African firms)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="container">
+      <div class="cta-band">
+        <span class="eyebrow">One More Thing</span>
+        <h2>If operational chaos is costing your team time, it's costing you revenue.</h2>
+        <p>Let's fix it.</p>
+        <div class="hero-actions">
+          <a href="#booking-form" class="btn btn-primary">Book Clarity Session</a>
+          <a href="mailto:hello@apexflowspace.com" class="btn btn-ghost">Email Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-top">
+      <div class="footer-brand">
+        <a href="index.html" class="brand">
+          <span class="brand-mark"><img src="assets/brand/mark-transparent.png" alt="Apex Flow mark"></span>
+          <span class="brand-word">Apex Flow</span>
+        </a>
+        <p>CRM architecture and process automation for B2B teams outgrowing their current system.</p>
+        <span class="footer-tagline">Chaos in. Clarity out.</span>
+        <div class="social-row">
+          <a class="social-icon" href="https://www.tiktok.com/.flow2" target="_blank" rel="noopener" aria-label="Apex Flow on TikTok"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.5 2c.4 2.4 2 4 4.5 4.2V9c-1.6.1-3-.4-4.5-1.3v6.8a5.7 5.7 0 1 1-5.7-5.7c.3 0 .6 0 .9.1v2.9a2.8 2.8 0 1 0 2 2.7V2h2.8z"/></svg></a>
+          <a class="social-icon" href="https://www.instagram.com/apexflow.ops" target="_blank" rel="noopener" aria-label="Apex Flow on Instagram"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/></svg></a>
+          <a class="social-icon" href="https://x.com/ApexFlow_ops" target="_blank" rel="noopener" aria-label="Apex Flow on X"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M18.9 2h3.3l-7.2 8.2L23.5 22h-6.6l-5.2-6.8L5.7 22H2.4l7.7-8.8L1.5 2h6.8l4.7 6.2L18.9 2z"/></svg></a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h4>Company</h4>
+        <a href="about.html">About</a>
+        <a href="process.html">How We Work</a>
+        <a href="case-studies.html">Case Studies</a>
+        <a href="pricing.html">Pricing</a>
+        <a href="careers.html">Careers</a>
+      </div>
+      <div class="footer-col">
+        <h4>Industries</h4>
+        <a href="real-estate.html">Real Estate</a>
+        <a href="financial-services.html">Financial Services</a>
+        <a href="index.html#services">All Services</a>
+      </div>
+      <div class="footer-col">
+        <h4>Services</h4>
+        <a href="index.html#services">CRM Architecture</a>
+        <a href="index.html#services">Pipeline Automation</a>
+        <a href="index.html#services">Reporting &amp; Dashboards</a>
+        <a href="index.html#services">Retainer Support</a>
+      </div>
+      <div class="footer-col">
+        <h4>Get In Touch</h4>
+        <a href="contact.html">Contact Us</a>
+        <a href="contact.html">Book a Strategy Call</a>
+      </div>
+    </div>
+    <div class="footer-newsletter">
+      <div class="footer-newsletter-copy">
+        <h4>Get updates in your inbox</h4>
+        <p>CRM tips and playbooks for B2B teams. No spam, unsubscribe anytime.</p>
+      </div>
+      <div class="footer-newsletter-form-wrap">
+        <form id="newsletter-form" class="newsletter-form">
+          <input type="text" id="newsletter-name" placeholder="First name" required>
+          <input type="email" id="newsletter-email" placeholder="Email address" required>
+          <button type="submit" class="btn btn-primary">Subscribe</button>
+        </form>
+        <div class="g-recaptcha" style="margin-top:10px;" data-sitekey="6LcRoLwtAAAAAHCXtfp3DCciyOM0YSAqbrWJXOzi"></div>
+        <p id="newsletter-status" style="display:none; font-size:13px; margin-top:8px;"></p>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Apex Flow Technology Group. All rights reserved.</span>
+      <div class="footer-legal">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Service</a>
+      </div>
+    </div>
+  </div>
+</footer>
+<script>
+  // Fixed campaign deadline so every visitor sees the same countdown.
+  (function () {
+    var end = new Date('2026-12-12T23:59:59+01:00').getTime();
+    var ids = ['days', 'hours', 'minutes', 'seconds'];
+    function tick() {
+      var d = Math.max(0, end - Date.now());
+      var vals = [Math.floor(d / 864e5), Math.floor(d / 36e5) % 24, Math.floor(d / 6e4) % 60, Math.floor(d / 1e3) % 60];
+      ids.forEach(function (id, i) {
+        var el = document.getElementById('countdown-' + id);
+        if (el) el.textContent = String(vals[i]).padStart(2, '0');
+      });
+    }
+    tick();
+    setInterval(tick, 1000);
+  })();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.14/dist/lenis.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+<script src="https://www.google.com/recaptcha/api.js"></script>
+<script src="js/main.js?v=20261017"></script>
+<script src="js/motion.js?v=20260901"></script>
+<script src="js/hero-3d.js?v=20260822" defer></script>
+</body>
+</html>

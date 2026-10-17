@@ -272,6 +272,80 @@ document.addEventListener('DOMContentLoaded', () => {
     };
   }
 
+  // Clarity Session landing page form: same Apps Script log + Salesforce
+  // Web-to-Lead pair as the contact form, tagged with its own web source.
+  const clarityForm = document.querySelector('#clarity-form');
+  if (clarityForm) {
+    clarityForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const status = document.querySelector('#clarity-status');
+      const submitBtn = clarityForm.querySelector('button[type="submit"]');
+      const showStatus = (color, text) => {
+        if (!status) return;
+        status.style.color = color;
+        status.textContent = text;
+        status.style.display = 'block';
+      };
+
+      const setup = Array.from(clarityForm.querySelectorAll('input[name="setup"]:checked')).map((el) => el.value);
+      if (setup.length === 0) {
+        showStatus('#e2555a', 'Please tick at least one option under Current Setup.');
+        return;
+      }
+      const captchaToken = (typeof grecaptcha !== 'undefined') ? grecaptcha.getResponse() : '';
+      if (!captchaToken) {
+        showStatus('#e2555a', 'Please check the "I\'m not a robot" box before submitting.');
+        return;
+      }
+
+      if (submitBtn) submitBtn.disabled = true;
+      try {
+        const fullName = document.querySelector('#clarity-name')?.value || '';
+        const email = document.querySelector('#clarity-email')?.value || '';
+        const bottleneck = document.querySelector('#clarity-bottleneck')?.value || '';
+        const summary = 'Clarity Session request. Current setup: ' + setup.join(', ') + '. Biggest bottleneck: ' + bottleneck;
+        const payload = {
+          fullName: fullName,
+          workEmail: email,
+          company: '',
+          teamSize: '',
+          industry: '',
+          lookingFor: 'Free Clarity Session',
+          pipeline: summary
+        };
+        {
+          const { firstName, lastName } = splitFullName_(fullName);
+          submitToSalesforceWebToLead(Object.assign({
+            oid: '00Dbm00000yZbns',
+            retURL: 'https://apexflowspace.com/clarity-session.html',
+            first_name: firstName,
+            last_name: lastName,
+            email: email,
+            company: companyFromEmail_(email),
+            Service_Interest__c: 'Free Clarity Session',
+            description: summary,
+            lead_source: 'Web',
+            Web_Source__c: 'Clarity Session Landing Page'
+          }, salesforceCaptchaSettings_(captchaToken)));
+        }
+        const res = await fetch(clarityForm.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify(payload)
+        });
+        const json = await res.json();
+        if (json.result !== 'success') throw new Error(json.error || 'Request failed');
+        clarityForm.reset();
+        showStatus('var(--blue)', "You're booked in. We'll email you a calendar link within 24 hours.");
+      } catch (err) {
+        showStatus('#e2555a', 'Something went wrong sending that. Please email hello@apexflowspace.com directly and we will get back to you.');
+      } finally {
+        if (submitBtn) submitBtn.disabled = false;
+        if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
+      }
+    });
+  }
+
   const form = document.querySelector('#contact-form');
   if (form) {
     form.addEventListener('submit', async (e) => {
