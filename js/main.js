@@ -260,7 +260,15 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // The apexflow-template org has Web-to-Lead reCAPTCHA turned off, and it
+  // silently drops any lead that carries captcha_settings for a key it
+  // doesn't have. So nothing is sent while that's off; the on-page
+  // reCAPTCHA still gates submission. If reCAPTCHA is enabled in the org
+  // (key name Apex_Flow_Web_to_Lead), set this to true.
+  const SALESFORCE_CAPTCHA_ENABLED = false;
+
   function salesforceCaptchaSettings_(captchaToken) {
+    if (!SALESFORCE_CAPTCHA_ENABLED) return {};
     return {
       captcha_settings: JSON.stringify({
         keyname: 'Apex_Flow_Web_to_Lead',
