@@ -307,7 +307,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const payload = {
           fullName: fullName,
           workEmail: email,
-          company: '',
+          company: document.querySelector('#clarity-company')?.value || '',
           teamSize: '',
           industry: '',
           lookingFor: 'Free Clarity Session',
@@ -321,7 +321,7 @@ document.addEventListener('DOMContentLoaded', () => {
             first_name: firstName,
             last_name: lastName,
             email: email,
-            company: companyFromEmail_(email),
+            company: payload.company || companyFromEmail_(email),
             Service_Interest__c: 'Free Clarity Session',
             description: summary,
             lead_source: 'Web',
@@ -336,7 +336,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const json = await res.json();
         if (json.result !== 'success') throw new Error(json.error || 'Request failed');
         clarityForm.reset();
-        showStatus('var(--blue)', "You're booked in. We'll email you a calendar link within 24 hours.");
+        showStatus('var(--blue)', "Thanks, that's in. Pick a time in Calendly to lock in your session.");
+        window.location.href = 'https://calendly.com/flowapex40/30min';
       } catch (err) {
         showStatus('#e2555a', 'Something went wrong sending that. Please email hello@apexflowspace.com directly and we will get back to you.');
       } finally {
