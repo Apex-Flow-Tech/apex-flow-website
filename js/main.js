@@ -43,7 +43,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const { firstName, lastName } = splitFullName_(payload.fullName);
         submitToSalesforceWebToLead(Object.assign({
-          oid: '00Dbm00000yZbns',
+          oid: '00DgK00000XsFOr',
           retURL: 'https://apexflowspace.com/toolkit.html',
           first_name: firstName,
           last_name: lastName,
@@ -97,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const { firstName, lastName } = splitFullName_(fullName);
 
       submitToSalesforceWebToLead(Object.assign({
-        oid: '00Dbm00000yZbns',
+        oid: '00DgK00000XsFOr',
         retURL: window.location.href,
         first_name: firstName,
         last_name: lastName,
@@ -265,7 +265,7 @@ document.addEventListener('DOMContentLoaded', () => {
       captcha_settings: JSON.stringify({
         keyname: 'Apex_Flow_Web_to_Lead',
         fallback: 'true',
-        orgId: '00Dbm00000yZbns',
+        orgId: '00DgK00000XsFOr',
         ts: String(Date.now())
       }),
       'g-recaptcha-response': captchaToken
@@ -316,7 +316,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           const { firstName, lastName } = splitFullName_(fullName);
           submitToSalesforceWebToLead(Object.assign({
-            oid: '00Dbm00000yZbns',
+            oid: '00DgK00000XsFOr',
             retURL: 'https://apexflowspace.com/clarity-session.html',
             first_name: firstName,
             last_name: lastName,
@@ -383,7 +383,7 @@ document.addEventListener('DOMContentLoaded', () => {
         {
           const { firstName, lastName } = splitFullName_(payload.fullName);
           submitToSalesforceWebToLead(Object.assign({
-            oid: '00Dbm00000yZbns',
+            oid: '00DgK00000XsFOr',
             retURL: 'https://apexflowspace.com/contact.html',
             first_name: firstName,
             last_name: lastName,
