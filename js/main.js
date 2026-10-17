@@ -336,11 +336,12 @@ document.addEventListener('DOMContentLoaded', () => {
         const json = await res.json();
         if (json.result !== 'success') throw new Error(json.error || 'Request failed');
         clarityForm.reset();
-        showStatus('var(--blue)', "Thanks, that's in. Pick a time in Calendly to lock in your session.");
-        window.location.href = 'https://calendly.com/flowapex40/30min';
       } catch (err) {
-        showStatus('#e2555a', 'Something went wrong sending that. Please email hello@apexflowspace.com directly and we will get back to you.');
+        // The Salesforce lead has already been sent; a Sheet-log failure
+        // shouldn't stop the visitor from booking.
       } finally {
+        showStatus('var(--blue)', "Thanks, that's in. Taking you to the calendar to pick a time...");
+        window.location.href = 'https://calendly.com/flowapex40/30min';
         if (submitBtn) submitBtn.disabled = false;
         if (typeof grecaptcha !== 'undefined') grecaptcha.reset();
       }
