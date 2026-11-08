@@ -433,6 +433,7 @@ document.addEventListener('DOMContentLoaded', () => {
             biggest_bottleneck: bottleneck
           }),
           postToAppsScript(clarityForm.action, {
+            source: 'Clarity Session Landing Page',
             fullName: name.fullName,
             firstName: name.firstName,
             lastName: name.lastName,
@@ -441,7 +442,9 @@ document.addEventListener('DOMContentLoaded', () => {
             teamSize: '',
             industry: '',
             lookingFor: 'Free Clarity Session',
-            pipeline: summary
+            pipeline: summary,
+            currentSetup: setup,
+            bottleneck: bottleneck
           })
         ]);
         clarityForm.reset();
@@ -478,6 +481,7 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
       try {
         const payload = {
+          source: 'Contact Form',
           fullName: name.fullName,
           firstName: name.firstName,
           lastName: name.lastName,

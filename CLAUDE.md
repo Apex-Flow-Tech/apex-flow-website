@@ -17,7 +17,7 @@ Our core technical philosophy is **maximum output with minimum software bloat**.
 ### 2. Form & Lead Capture Architecture
 The site is static HTML/CSS/JS served from `apexflowspace.com` (see `CNAME`). There is no backend server. All form logic lives in `js/main.js`, with the destination IDs as constants at the top of the file.
 
-Every lead-capture form sends each submission to up to three places in parallel:
+Every lead-capture form sends each submission to up to three places in parallel, and Apps Script forwards strategy calls and clarity sessions to a fourth (ClickUp):
 
 1. **Salesforce Web-to-Lead (CRM of record):**
    * Org: Apex Flow Technologies, Enterprise Edition, org ID `00Dd3000009jvOL` (constant `SALESFORCE_ORG_ID`).
@@ -39,13 +39,18 @@ Every lead-capture form sends each submission to up to three places in parallel:
    * The newsletter only shows "You're subscribed" after HubSpot accepts the sign-up. Other forms never wait on HubSpot before confirming. Every outside request has a time limit (`fetchWithTimeout`).
 3. **Google Apps Script (Google Sheet log):** each form's `action` URL. Sent with `fetch()` as a raw JSON body with `Content-Type: text/plain;charset=utf-8` so it stays a CORS "simple request" (Apps Script cannot answer a preflight). Do not change it to `application/json`. The script replies `{"result":"success"}`.
 
-| Form | Page | Salesforce `Web_Source__c` | HubSpot form | Apps Script |
-|---|---|---|---|---|
-| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Website Strategy Calls | Yes |
-| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Website Clarity Sessions | Yes (same script as contact) |
-| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Website Toolkit Downloads | Yes (also sends the delivery email) |
-| Newsletter (`#newsletter-form`) | footer of most pages | Newsletter | Website Newsletter | No |
-| Careers (`#careers-form`) | `careers.html` | Not sent | Not sent | Yes (resume saved to Drive) |
+4. **ClickUp (lead follow-up tasks):** strategy calls and clarity sessions also become tasks in ClickUp, list **AFT WORKFLOW > Growth & Marketing > Lead Generation** (`1200440000036776`), status `new lead`. The Apps Script web app creates them server-side (`integrations/apps-script/clickup.gs`), so the ClickUp token stays in Apps Script's Script Properties (`CLICKUP_TOKEN`) and never reaches the browser.
+   * The website tells Apps Script which form a submission came from with the `source` key (`Contact Form` or `Clarity Session Landing Page`), and sends the clarity answers as `currentSetup` (array) and `bottleneck`.
+   * Task fields: Email contact, Company Name, Web Source, Team Size, Industry, Service Interest, Current Pipeline, Current Setup (labels), Biggest Bottleneck, Persona (internal, same rule as Salesforce). Dropdown and label values are matched by exact text to the option IDs in `clickup.gs`; change both together.
+   * Toolkit downloads, newsletter sign-ups and careers applications do not go to ClickUp.
+
+| Form | Page | Salesforce `Web_Source__c` | HubSpot form | Apps Script | ClickUp task |
+|---|---|---|---|---|---|
+| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Website Strategy Calls | Yes | Yes |
+| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Website Clarity Sessions | Yes (same script as contact) | Yes |
+| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Website Toolkit Downloads | Yes (also sends the delivery email) | No |
+| Newsletter (`#newsletter-form`) | footer of most pages | Newsletter | Website Newsletter | No | No |
+| Careers (`#careers-form`) | `careers.html` | Not sent | Not sent | Yes (resume saved to Drive) | No |
 
 **Names:** every form has separate First name and Last name boxes, both required. Apps Script payloads carry `firstName`, `lastName`, and the joined `fullName` (kept for the existing Sheet columns).
 
