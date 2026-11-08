@@ -65,9 +65,13 @@
           <h3 style="margin-bottom:4px;">Get the free toolkit</h3>
           <p style="font-size:13.5px; margin-bottom:20px;">Enter your name and email, and it's yours instantly.</p>
           <div class="form-grid">
-            <div class="form-field full">
-              <label for="toolkit-name">Name</label>
-              <input type="text" id="toolkit-name" name="fullName" required>
+            <div class="form-field">
+              <label for="toolkit-first-name">First name</label>
+              <input type="text" id="toolkit-first-name" name="firstName" autocomplete="given-name" required>
+            </div>
+            <div class="form-field">
+              <label for="toolkit-last-name">Last name</label>
+              <input type="text" id="toolkit-last-name" name="lastName" autocomplete="family-name" required>
             </div>
             <div class="form-field full">
               <label for="toolkit-email">Email</label>

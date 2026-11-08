@@ -15,27 +15,32 @@ Our core technical philosophy is **maximum output with minimum software bloat**.
 * **GitHub & Claude Code:** Version control, cloud execution, repository management, and autonomous development.
 
 ### 2. Form & Lead Capture Architecture
-The site is static HTML/CSS/JS served from `apexflowspace.com` (see `CNAME`). There is no backend server. All form logic lives in `js/main.js`.
+The site is static HTML/CSS/JS served from `apexflowspace.com` (see `CNAME`). There is no backend server. All form logic lives in `js/main.js`, with the destination IDs as constants at the top of the file.
 
-**Strategy call form** (`contact.html`, `#contact-form`) sends every lead to two destinations in parallel:
+Every lead-capture form sends each submission to up to three places in parallel:
 
 1. **Salesforce Web-to-Lead (CRM of record):**
-   * Endpoint: `https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8`
-   * Org ID (`oid`): `00DgK00000XsFOr`
-   * Sent via a hidden form POST into a hidden iframe (`#sf-w2l-target`), because Web-to-Lead returns no CORS headers. This is fire-and-forget and must never block the visitor.
-   * Fields sent: `first_name`, `last_name` (split from Full name), `email`, `company`, `Team_Size__c`, `Persona__c` (Industry dropdown value), `Service_Interest__c`, `description`, `lead_source` = `Web`, `Web_Source__c` = `Contact Form`, `retURL`.
-2. **Google Apps Script web app (Google Sheet log):**
-   * Endpoint: the form's `action` URL (`https://script.google.com/macros/s/AKfycbwwy0SGJLpnthSaBUnTnf1aZBYVOKRNMTFyLstW0EFmsmjGmI4RgRJ8lmoy07OS1k0s/exec`).
-   * Sent with `fetch()` as a raw JSON body with `Content-Type: text/plain;charset=utf-8`. This keeps it a CORS "simple request", because Apps Script cannot answer a preflight OPTIONS call. Do not change it to `application/json`.
-   * JSON keys: `fullName`, `workEmail`, `company`, `teamSize`, `industry`, `lookingFor`, `pipeline`.
-   * The script replies with `{"result":"success"}`; anything else shows the visitor an error asking them to email `hello@apexflowspace.com`.
+   * Org: Apex Flow Technologies, Enterprise Edition, org ID `00Dd3000009jvOL` (constant `SALESFORCE_ORG_ID`).
+   * Endpoint: `https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8`, sent as a hidden form POST into a hidden iframe (`#sf-w2l-target`) because Web-to-Lead returns no CORS headers. Fire-and-forget; it must never block the visitor.
+   * Standard fields: `first_name`, `last_name`, `email`, `company`, `industry`, `description`, `lead_source` = `Web`, `retURL`.
+   * Custom Lead fields: `Team_Size__c` (text), `Service_Interest__c` (picklist), `Web_Source__c` (picklist: Contact Form, Clarity Session Landing Page, Resource Download, Newsletter). The permission set "Apex Flow Lead Fields" grants access to them.
+   * `Persona__c` is a formula field calculated in Salesforce from Industry (Real Estate = Dynamic Dapo, Financial Services = Careful Chioma, any other industry = Other/Unclassified). The website never sends it.
+2. **HubSpot (marketing engine):** portal `148898672`, through the public Forms Submission API `https://api.hsforms.com/submissions/v3/integration/submit/{portal}/{formGuid}`.
+   * Newsletter sign-ups use the newsletter form (`HUBSPOT_FORM_NEWSLETTER`). The visitor only sees "You're subscribed" after HubSpot accepts the sign-up.
+   * All other leads use the website leads form (`HUBSPOT_FORM_LEADS`), with properties `email`, `firstname`, `lastname`, `company`, `industry`, `message`.
+3. **Google Apps Script (Google Sheet log):** each form's `action` URL. Sent with `fetch()` as a raw JSON body with `Content-Type: text/plain;charset=utf-8` so it stays a CORS "simple request" (Apps Script cannot answer a preflight). Do not change it to `application/json`. The script replies `{"result":"success"}`.
 
-**Spam protection:** Google reCAPTCHA v2 checkbox (site key `6LcRoLwtAAAAAHCXtfp3DCciyOM0YSAqbrWJXOzi`) must be ticked before submit. `SALESFORCE_CAPTCHA_ENABLED` in `js/main.js` is `false` because the Salesforce org has Web-to-Lead reCAPTCHA turned off and silently drops leads that carry `captcha_settings`. Only set it to `true` after enabling reCAPTCHA in the org (key name `Apex_Flow_Web_to_Lead`).
+| Form | Page | Salesforce `Web_Source__c` | HubSpot form | Apps Script |
+|---|---|---|---|---|
+| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Leads | Yes |
+| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Leads | Yes (same script as contact) |
+| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Leads | Yes (also sends the delivery email) |
+| Newsletter (`#newsletter-form`) | footer of most pages | Newsletter | Newsletter | No |
+| Careers (`#careers-form`) | `careers.html` | Not sent | Not sent | Yes (resume saved to Drive) |
 
-**Other forms using the same pattern:**
-* `clarity-session.html` (`#clarity-form`): same Apps Script endpoint and Web-to-Lead pair, `Web_Source__c` = `Clarity Session Landing Page`.
-* `toolkit.html` (`#toolkit-form`): its own Apps Script web app, which also sends the toolkit delivery email, plus Web-to-Lead.
-* `careers.html` (`#careers-form`): its own Apps Script web app; the resume is base64-encoded in the browser and saved to Drive by the script. No Salesforce lead.
+**Names:** every form has separate First name and Last name boxes, both required. Apps Script payloads carry `firstName`, `lastName`, and the joined `fullName` (kept for the existing Sheet columns).
+
+**Spam protection:** every form has its own Google reCAPTCHA v2 checkbox (site key `6LcRoLwtAAAAAHCXtfp3DCciyOM0YSAqbrWJXOzi`). Pages can hold two widgets, so the code reads the widget inside each form (`captchaFor_`), never the page's first one. `SALESFORCE_CAPTCHA_ENABLED` stays `false` and "Require reCAPTCHA Verification" stays off in Salesforce Web-to-Lead settings: the org silently drops leads that carry `captcha_settings` it doesn't expect.
 
 ---
 
@@ -47,17 +52,18 @@ When writing code, building frontend components, or modifying configuration file
    * Do not introduce heavy frameworks (like React, Next.js, or complex backend node servers) unless explicitly requested. 
    * Default to clean HTML, CSS, vanilla JavaScript, or lightweight static generation.
 
-2. **Strict Form Mapping:** 
+2. **Strict Form Mapping:**
    * Never alter or strip field `name=""` attributes on form inputs. The strategy call form uses these exact, case-sensitive names:
-     * `Full name`
+     * `First name`
+     * `Last name`
      * `Work email`
      * `Company`
      * `Team size`
      * `Industry`
      * `What are you looking for?`
      * `Tell us about your current pipeline`
-   * Never rename the Apps Script JSON keys or the Salesforce Web-to-Lead field names listed above. The Sheet columns and Salesforce lead fields depend on them.
-   * Keep the Industry dropdown `value` attributes as they are (`Dynamic Dapo`, `Careful Chioma`, `Other/Unclassified`). They are persona codes for the Salesforce `Persona__c` field, not display text.
+   * Never rename the Apps Script JSON keys, the HubSpot property names, or the Salesforce Web-to-Lead field names listed above. The Sheet columns, HubSpot contacts and Salesforce lead fields depend on them.
+   * Industry dropdown values are the real industry names (`Real Estate`, `Financial Services`, `Other`). Buyer personas (Dynamic Dapo, Careful Chioma, Other/Unclassified) are internal only: never put them in website code, copy, or page source. Salesforce works them out from Industry.
 
 3. **No Em Dashes & Clean Deliverables:**
    * Do not use em dashes (`—`) in user-facing copy, automated email responses, or documentation text.

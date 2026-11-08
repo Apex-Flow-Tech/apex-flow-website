@@ -63,8 +63,12 @@
           <form id="contact-form" action="https://script.google.com/macros/s/AKfycbwwy0SGJLpnthSaBUnTnf1aZBYVOKRNMTFyLstW0EFmsmjGmI4RgRJ8lmoy07OS1k0s/exec" method="POST">
             <div class="form-grid">
               <div class="form-field">
-                <label for="name">Full name</label>
-                <input type="text" id="name" name="Full name" required>
+                <label for="first-name">First name</label>
+                <input type="text" id="first-name" name="First name" autocomplete="given-name" required>
+              </div>
+              <div class="form-field">
+                <label for="last-name">Last name</label>
+                <input type="text" id="last-name" name="Last name" autocomplete="family-name" required>
               </div>
               <div class="form-field">
                 <label for="email">Work email</label>
@@ -86,9 +90,9 @@
               <div class="form-field">
                 <label for="industry">Industry</label>
                 <select id="industry" name="Industry">
-                  <option value="Dynamic Dapo">Real Estate</option>
-                  <option value="Careful Chioma">Financial Services</option>
-                  <option value="Other/Unclassified">Other B2B</option>
+                  <option value="Real Estate">Real Estate</option>
+                  <option value="Financial Services">Financial Services</option>
+                  <option value="Other">Other B2B</option>
                 </select>
               </div>
               <div class="form-field full">

@@ -189,7 +189,8 @@
       </div>
       <div class="footer-newsletter-form-wrap">
         <form id="newsletter-form" class="newsletter-form">
-          <input type="text" id="newsletter-name" placeholder="First name" required>
+          <input type="text" id="newsletter-first-name" name="firstname" placeholder="First name" aria-label="First name" autocomplete="given-name" required>
+          <input type="text" id="newsletter-last-name" name="lastname" placeholder="Last name" aria-label="Last name" autocomplete="family-name" required>
           <input type="email" id="newsletter-email" placeholder="Email address" required>
           <button type="submit" class="btn btn-primary">Subscribe</button>
         </form>
