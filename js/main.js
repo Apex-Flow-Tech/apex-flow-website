@@ -20,12 +20,16 @@ document.addEventListener('DOMContentLoaded', () => {
   // (Apex Flow Technologies, Enterprise Edition).
   const SALESFORCE_ORG_ID = '00Dd3000009jvOL';
 
-  // HubSpot portal and the forms that website submissions are filed under.
-  // Newsletter sign-ups go to the newsletter form; every other lead goes to
-  // the website leads form.
-  const HUBSPOT_PORTAL_ID = '148898672';
-  const HUBSPOT_FORM_NEWSLETTER = '382453c5-0fa4-4c1b-97f1-992b24ff3d11';
-  const HUBSPOT_FORM_LEADS = '4567e67e-0a18-4952-96e4-01e57764a4d5';
+  // HubSpot account (hello@apexflowspace.com, hosted in HubSpot's EU data
+  // centre, so submissions must use the api-eu1 host). The free plan has a
+  // single form, "Website Newsletter", so newsletter sign-ups and leads both
+  // go to it; the "message" property records which website form each came
+  // from. If a separate leads form is created later, put its ID in
+  // HUBSPOT_FORM_LEADS.
+  const HUBSPOT_SUBMIT_HOST = 'https://api-eu1.hsforms.com';
+  const HUBSPOT_PORTAL_ID = '149687015';
+  const HUBSPOT_FORM_NEWSLETTER = '9f2f4540-80cc-4ae9-b3eb-5f896edc08e8';
+  const HUBSPOT_FORM_LEADS = '9f2f4540-80cc-4ae9-b3eb-5f896edc08e8';
 
   // Reads and trims the first/last name boxes of a form. Salesforce needs
   // them as separate fields; the Apps Script sheets still get the joined
@@ -121,7 +125,7 @@ document.addEventListener('DOMContentLoaded', () => {
       .filter(([, value]) => value)
       .map(([name, value]) => ({ objectTypeId: '0-1', name, value: String(value) }));
     const res = await fetchWithTimeout(
-      'https://api.hsforms.com/submissions/v3/integration/submit/' + HUBSPOT_PORTAL_ID + '/' + formGuid,
+      HUBSPOT_SUBMIT_HOST + '/submissions/v3/integration/submit/' + HUBSPOT_PORTAL_ID + '/' + formGuid,
       {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -280,7 +284,8 @@ document.addEventListener('DOMContentLoaded', () => {
         await submitToHubSpot(HUBSPOT_FORM_NEWSLETTER, {
           email: email,
           firstname: name.firstName,
-          lastname: name.lastName
+          lastname: name.lastName,
+          message: 'Newsletter sign-up from the website.'
         });
         newsletterForm.reset();
         showStatus('var(--blue)', "You're subscribed. Thanks for signing up.");

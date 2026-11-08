@@ -25,17 +25,18 @@ Every lead-capture form sends each submission to up to three places in parallel:
    * Standard fields: `first_name`, `last_name`, `email`, `company`, `industry`, `description`, `lead_source` = `Web`, `retURL`.
    * Custom Lead fields: `Team_Size__c` (text), `Service_Interest__c` (picklist), `Web_Source__c` (picklist: Contact Form, Clarity Session Landing Page, Resource Download, Newsletter). The permission set "Apex Flow Lead Fields" grants access to them.
    * `Persona__c` is a formula field calculated in Salesforce from Industry (Real Estate = Dynamic Dapo, Financial Services = Careful Chioma, any other industry = Other/Unclassified). The website never sends it.
-2. **HubSpot (marketing engine):** portal `148898672`, through the public Forms Submission API `https://api.hsforms.com/submissions/v3/integration/submit/{portal}/{formGuid}`.
-   * Newsletter sign-ups use the newsletter form (`HUBSPOT_FORM_NEWSLETTER`). The visitor only sees "You're subscribed" after HubSpot accepts the sign-up.
-   * All other leads use the website leads form (`HUBSPOT_FORM_LEADS`), with properties `email`, `firstname`, `lastname`, `company`, `industry`, `message`.
+2. **HubSpot (marketing engine):** account `149687015` (hello@apexflowspace.com, free plan, EU data centre). Submissions use the public Forms Submission API on the EU host: `https://api-eu1.hsforms.com/submissions/v3/integration/submit/{portal}/{formGuid}` (`HUBSPOT_SUBMIT_HOST`). The global `api.hsforms.com` host does not work for this account.
+   * The free plan has one form, "Website Newsletter" (`9f2f4540-80cc-4ae9-b3eb-5f896edc08e8`), so `HUBSPOT_FORM_NEWSLETTER` and `HUBSPOT_FORM_LEADS` both point to it. The `message` property records which website form each contact came from.
+   * Properties sent: `email`, `firstname`, `lastname`, `company`, `industry`, `message`.
+   * The newsletter only shows "You're subscribed" after HubSpot accepts the sign-up. Other forms never wait on HubSpot before confirming. Every outside request has a time limit (`fetchWithTimeout`).
 3. **Google Apps Script (Google Sheet log):** each form's `action` URL. Sent with `fetch()` as a raw JSON body with `Content-Type: text/plain;charset=utf-8` so it stays a CORS "simple request" (Apps Script cannot answer a preflight). Do not change it to `application/json`. The script replies `{"result":"success"}`.
 
 | Form | Page | Salesforce `Web_Source__c` | HubSpot form | Apps Script |
 |---|---|---|---|---|
-| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Leads | Yes |
-| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Leads | Yes (same script as contact) |
-| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Leads | Yes (also sends the delivery email) |
-| Newsletter (`#newsletter-form`) | footer of most pages | Newsletter | Newsletter | No |
+| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Website Newsletter (message notes the source) | Yes |
+| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Website Newsletter (message notes the source) | Yes (same script as contact) |
+| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Website Newsletter (message notes the source) | Yes (also sends the delivery email) |
+| Newsletter (`#newsletter-form`) | footer of most pages | Newsletter | Website Newsletter | No |
 | Careers (`#careers-form`) | `careers.html` | Not sent | Not sent | Yes (resume saved to Drive) |
 
 **Names:** every form has separate First name and Last name boxes, both required. Apps Script payloads carry `firstName`, `lastName`, and the joined `fullName` (kept for the existing Sheet columns).
