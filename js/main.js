@@ -101,6 +101,18 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   }
 
+  // fetch() with a time limit, so a slow or blocked service can never
+  // leave a visitor staring at a form with no message.
+  async function fetchWithTimeout(url, options, ms) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), ms || 10000);
+    try {
+      return await fetch(url, Object.assign({}, options, { signal: controller.signal }));
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
   // Sends a contact to HubSpot through the public Forms Submission API
   // (no API key needed, CORS enabled). Blank values are skipped. Resolves
   // when HubSpot accepts the submission, rejects otherwise.
@@ -108,7 +120,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const fields = Object.entries(properties)
       .filter(([, value]) => value)
       .map(([name, value]) => ({ objectTypeId: '0-1', name, value: String(value) }));
-    const res = await fetch(
+    const res = await fetchWithTimeout(
       'https://api.hsforms.com/submissions/v3/integration/submit/' + HUBSPOT_PORTAL_ID + '/' + formGuid,
       {
         method: 'POST',
@@ -117,7 +129,8 @@ document.addEventListener('DOMContentLoaded', () => {
           fields,
           context: { pageUri: window.location.href, pageName: document.title }
         })
-      }
+      },
+      8000
     );
     if (!res.ok) throw new Error('HubSpot rejected the submission (' + res.status + ')');
   }
@@ -127,11 +140,11 @@ document.addEventListener('DOMContentLoaded', () => {
   // this a CORS "simple request", because Apps Script cannot answer a
   // preflight OPTIONS call.
   async function postToAppsScript(url, payload) {
-    const res = await fetch(url, {
+    const res = await fetchWithTimeout(url, {
       method: 'POST',
       headers: { 'Content-Type': 'text/plain;charset=utf-8' },
       body: JSON.stringify(payload)
-    });
+    }, 15000);
     return res.json();
   }
 
@@ -250,7 +263,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       const email = (document.querySelector('#newsletter-email')?.value || '').trim();
 
-      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Subscribing...'; }
 
       submitToSalesforceWebToLead(Object.assign({
         retURL: window.location.href,
@@ -275,7 +288,7 @@ document.addEventListener('DOMContentLoaded', () => {
         showStatus('#e2555a', "We couldn't sign you up just now. Please try again, or email hello@apexflowspace.com.");
       } finally {
         captcha.reset();
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Subscribe'; }
       }
     });
   }
@@ -458,7 +471,7 @@ document.addEventListener('DOMContentLoaded', () => {
       const captcha = captchaFor_(form);
       if (!captcha.token) { showStatus('#e2555a', CAPTCHA_MESSAGE); return; }
 
-      if (submitBtn) submitBtn.disabled = true;
+      if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
       try {
         const payload = {
           fullName: name.fullName,
@@ -487,8 +500,8 @@ document.addEventListener('DOMContentLoaded', () => {
           Web_Source__c: 'Contact Form'
         }, salesforceCaptchaSettings_(captcha.token)));
 
-        const [, sheet] = await Promise.allSettled([
-          submitToHubSpot(HUBSPOT_FORM_LEADS, {
+        // HubSpot runs alongside but never holds up the visitor's message.
+        submitToHubSpot(HUBSPOT_FORM_LEADS, {
             email: payload.workEmail,
             firstname: payload.firstName,
             lastname: payload.lastName,
@@ -496,18 +509,16 @@ document.addEventListener('DOMContentLoaded', () => {
             industry: payload.industry,
             message: 'Strategy call request. Looking for: ' + payload.lookingFor +
               '. Team size: ' + payload.teamSize + '. Pipeline: ' + payload.pipeline
-          }),
-          postToAppsScript(form.action, payload)
-        ]);
-        if (sheet.status !== 'fulfilled' || sheet.value.result !== 'success') {
-          throw new Error('Sheet log failed');
-        }
+        }).catch(() => {});
+
+        const sheet = await postToAppsScript(form.action, payload);
+        if (sheet.result !== 'success') throw new Error('Sheet log failed');
         form.reset();
         showStatus('var(--blue)', "Thanks, that's in. We reply to strategy call requests within 1 business day.");
       } catch (err) {
         showStatus('#e2555a', 'Something went wrong sending that. Please email hello@apexflowspace.com directly and we will get back to you.');
       } finally {
-        if (submitBtn) submitBtn.disabled = false;
+        if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = 'Request a Strategy Call'; }
         captcha.reset();
       }
     });
