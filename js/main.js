@@ -21,15 +21,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const SALESFORCE_ORG_ID = '00Dd3000009jvOL';
 
   // HubSpot account (hello@apexflowspace.com, hosted in HubSpot's EU data
-  // centre, so submissions must use the api-eu1 host). The free plan has a
-  // single form, "Website Newsletter", so newsletter sign-ups and leads both
-  // go to it; the "message" property records which website form each came
-  // from. If a separate leads form is created later, put its ID in
-  // HUBSPOT_FORM_LEADS.
+  // centre, so submissions must use the api-eu1 host). Each website form has
+  // its own HubSpot form with matching fields.
   const HUBSPOT_SUBMIT_HOST = 'https://api-eu1.hsforms.com';
   const HUBSPOT_PORTAL_ID = '149687015';
-  const HUBSPOT_FORM_NEWSLETTER = '9f2f4540-80cc-4ae9-b3eb-5f896edc08e8';
-  const HUBSPOT_FORM_LEADS = '9f2f4540-80cc-4ae9-b3eb-5f896edc08e8';
+  const HUBSPOT_FORM_STRATEGY_CALLS = 'bac3661d-f083-41b6-8f96-e52249e04f82';
+  const HUBSPOT_FORM_CLARITY_SESSIONS = '3a9b4e27-aa6a-4609-9c38-3103d50e7a7c';
+  const HUBSPOT_FORM_NEWSLETTER = '284ca014-0dfe-4a6d-9930-d15ebf8c78b2';
+  const HUBSPOT_FORM_TOOLKIT = 'ec0ec2d0-d252-4bac-a26a-dbb115f8aef0';
 
   // Reads and trims the first/last name boxes of a form. Salesforce needs
   // them as separate fields; the Apps Script sheets still get the joined
@@ -211,11 +210,10 @@ document.addEventListener('DOMContentLoaded', () => {
         }, salesforceCaptchaSettings_(captcha.token)));
 
         await Promise.allSettled([
-          submitToHubSpot(HUBSPOT_FORM_LEADS, {
+          submitToHubSpot(HUBSPOT_FORM_TOOLKIT, {
             email: email,
             firstname: name.firstName,
-            lastname: name.lastName,
-            message: 'Downloaded the Never Lose a Lead toolkit.'
+            lastname: name.lastName
           }),
           // This Apps Script also sends the toolkit delivery email.
           postToAppsScript(toolkitForm.action, {
@@ -284,8 +282,7 @@ document.addEventListener('DOMContentLoaded', () => {
         await submitToHubSpot(HUBSPOT_FORM_NEWSLETTER, {
           email: email,
           firstname: name.firstName,
-          lastname: name.lastName,
-          message: 'Newsletter sign-up from the website.'
+          lastname: name.lastName
         });
         newsletterForm.reset();
         showStatus('var(--blue)', "You're subscribed. Thanks for signing up.");
@@ -426,12 +423,14 @@ document.addEventListener('DOMContentLoaded', () => {
         // Both logs are best-effort: a failure shouldn't stop the visitor
         // from booking, and the Salesforce lead has already been sent.
         await Promise.allSettled([
-          submitToHubSpot(HUBSPOT_FORM_LEADS, {
+          submitToHubSpot(HUBSPOT_FORM_CLARITY_SESSIONS, {
             email: email,
             firstname: name.firstName,
             lastname: name.lastName,
             company: company,
-            message: summary
+            // Checkbox properties take their values joined with ";".
+            current_setup: setup.join(';'),
+            biggest_bottleneck: bottleneck
           }),
           postToAppsScript(clarityForm.action, {
             fullName: name.fullName,
@@ -506,14 +505,15 @@ document.addEventListener('DOMContentLoaded', () => {
         }, salesforceCaptchaSettings_(captcha.token)));
 
         // HubSpot runs alongside but never holds up the visitor's message.
-        submitToHubSpot(HUBSPOT_FORM_LEADS, {
-            email: payload.workEmail,
-            firstname: payload.firstName,
-            lastname: payload.lastName,
-            company: payload.company,
-            industry: payload.industry,
-            message: 'Strategy call request. Looking for: ' + payload.lookingFor +
-              '. Team size: ' + payload.teamSize + '. Pipeline: ' + payload.pipeline
+        submitToHubSpot(HUBSPOT_FORM_STRATEGY_CALLS, {
+          email: payload.workEmail,
+          firstname: payload.firstName,
+          lastname: payload.lastName,
+          company: payload.company,
+          team_size: payload.teamSize,
+          industry: payload.industry,
+          what_are_you_looking_for: payload.lookingFor,
+          tell_us_about_your_current_pipeline: payload.pipeline
         }).catch(() => {});
 
         const sheet = await postToAppsScript(form.action, payload);

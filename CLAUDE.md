@@ -26,16 +26,24 @@ Every lead-capture form sends each submission to up to three places in parallel:
    * Custom Lead fields: `Team_Size__c` (text), `Service_Interest__c` (picklist), `Web_Source__c` (picklist: Contact Form, Clarity Session Landing Page, Resource Download, Newsletter). The permission set "Apex Flow Lead Fields" grants access to them.
    * `Persona__c` is a formula field calculated in Salesforce from Industry (Real Estate = Dynamic Dapo, Financial Services = Careful Chioma, any other industry = Other/Unclassified). The website never sends it.
 2. **HubSpot (marketing engine):** account `149687015` (hello@apexflowspace.com, free plan, EU data centre). Submissions use the public Forms Submission API on the EU host: `https://api-eu1.hsforms.com/submissions/v3/integration/submit/{portal}/{formGuid}` (`HUBSPOT_SUBMIT_HOST`). The global `api.hsforms.com` host does not work for this account.
-   * The free plan has one form, "Website Newsletter" (`9f2f4540-80cc-4ae9-b3eb-5f896edc08e8`), so `HUBSPOT_FORM_NEWSLETTER` and `HUBSPOT_FORM_LEADS` both point to it. The `message` property records which website form each contact came from.
-   * Properties sent: `email`, `firstname`, `lastname`, `company`, `industry`, `message`.
+   * Each website form has its own HubSpot form (created through the HubSpot Forms API), with fields that match the website one-to-one:
+
+     | HubSpot form | Constant | Form ID | HubSpot properties |
+     |---|---|---|---|
+     | Website Strategy Calls | `HUBSPOT_FORM_STRATEGY_CALLS` | `bac3661d-f083-41b6-8f96-e52249e04f82` | `firstname`, `lastname`, `email`, `company`, `team_size`, `industry`, `what_are_you_looking_for`, `tell_us_about_your_current_pipeline` |
+     | Website Clarity Sessions | `HUBSPOT_FORM_CLARITY_SESSIONS` | `3a9b4e27-aa6a-4609-9c38-3103d50e7a7c` | `firstname`, `lastname`, `email`, `company`, `current_setup` (checkboxes, values joined with `;`), `biggest_bottleneck` |
+     | Website Newsletter | `HUBSPOT_FORM_NEWSLETTER` | `284ca014-0dfe-4a6d-9930-d15ebf8c78b2` | `firstname`, `lastname`, `email` |
+     | Website Toolkit Downloads | `HUBSPOT_FORM_TOOLKIT` | `ec0ec2d0-d252-4bac-a26a-dbb115f8aef0` | `firstname`, `lastname`, `email` |
+
+   * Dropdown and checkbox values sent by the website must match the HubSpot property options exactly, or HubSpot drops them. Change both together.
    * The newsletter only shows "You're subscribed" after HubSpot accepts the sign-up. Other forms never wait on HubSpot before confirming. Every outside request has a time limit (`fetchWithTimeout`).
 3. **Google Apps Script (Google Sheet log):** each form's `action` URL. Sent with `fetch()` as a raw JSON body with `Content-Type: text/plain;charset=utf-8` so it stays a CORS "simple request" (Apps Script cannot answer a preflight). Do not change it to `application/json`. The script replies `{"result":"success"}`.
 
 | Form | Page | Salesforce `Web_Source__c` | HubSpot form | Apps Script |
 |---|---|---|---|---|
-| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Website Newsletter (message notes the source) | Yes |
-| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Website Newsletter (message notes the source) | Yes (same script as contact) |
-| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Website Newsletter (message notes the source) | Yes (also sends the delivery email) |
+| Strategy call (`#contact-form`) | `contact.html` | Contact Form | Website Strategy Calls | Yes |
+| Clarity session (`#clarity-form`), then Calendly | `clarity-session.html` | Clarity Session Landing Page | Website Clarity Sessions | Yes (same script as contact) |
+| Toolkit download (`#toolkit-form`) | `toolkit.html` | Resource Download | Website Toolkit Downloads | Yes (also sends the delivery email) |
 | Newsletter (`#newsletter-form`) | footer of most pages | Newsletter | Website Newsletter | No |
 | Careers (`#careers-form`) | `careers.html` | Not sent | Not sent | Yes (resume saved to Drive) |
 
