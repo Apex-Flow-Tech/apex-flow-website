@@ -29,10 +29,10 @@ document.addEventListener('DOMContentLoaded', () => {
   const HUBSPOT_FORM_CLARITY_SESSIONS = '3a9b4e27-aa6a-4609-9c38-3103d50e7a7c';
   const HUBSPOT_FORM_NEWSLETTER = '284ca014-0dfe-4a6d-9930-d15ebf8c78b2';
   const HUBSPOT_FORM_TOOLKIT = 'ec0ec2d0-d252-4bac-a26a-dbb115f8aef0';
+  const HUBSPOT_FORM_CAREERS = '842b23fd-9386-4d40-80ca-0d0872265959';
 
-  // Reads and trims the first/last name boxes of a form. Salesforce needs
-  // them as separate fields; the Apps Script sheets still get the joined
-  // full name under their existing "fullName" key.
+  // Reads and trims the first/last name boxes of a form. Salesforce and
+  // HubSpot both take them as separate fields.
   function readName_(firstSelector, lastSelector) {
     const firstName = (document.querySelector(firstSelector)?.value || '').trim();
     const lastName = (document.querySelector(lastSelector)?.value || '').trim();
@@ -138,9 +138,10 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!res.ok) throw new Error('HubSpot rejected the submission (' + res.status + ')');
   }
 
-  // Sends JSON to a Google Apps Script web app. The script's doPost()
-  // reads e.postData.contents as raw JSON. Content-Type text/plain keeps
-  // this a CORS "simple request", because Apps Script cannot answer a
+  // Sends JSON to a Google Apps Script web app. Only the careers form uses
+  // this, to save the resume file to Google Drive > Careers. The script's
+  // doPost() reads e.postData.contents as raw JSON. Content-Type text/plain
+  // keeps this a CORS "simple request", because Apps Script cannot answer a
   // preflight OPTIONS call.
   async function postToAppsScript(url, payload) {
     const res = await fetchWithTimeout(url, {
@@ -209,22 +210,15 @@ document.addEventListener('DOMContentLoaded', () => {
           Web_Source__c: 'Resource Download'
         }, salesforceCaptchaSettings_(captcha.token)));
 
-        await Promise.allSettled([
-          submitToHubSpot(HUBSPOT_FORM_TOOLKIT, {
-            email: email,
-            firstname: name.firstName,
-            lastname: name.lastName
-          }),
-          // This Apps Script also sends the toolkit delivery email.
-          postToAppsScript(toolkitForm.action, {
-            fullName: name.fullName,
-            firstName: name.firstName,
-            lastName: name.lastName,
-            email: email
-          })
-        ]);
+        // HubSpot also sends the follow-up email with the toolkit link
+        // (set up on the "Website Toolkit Downloads" form in HubSpot).
+        await submitToHubSpot(HUBSPOT_FORM_TOOLKIT, {
+          email: email,
+          firstname: name.firstName,
+          lastname: name.lastName
+        }).catch(() => {});
       } finally {
-        // Logging or emailing problems never block the download itself.
+        // A HubSpot problem never blocks the download itself.
         toolkitForm.style.display = 'none';
         if (downloadBox) {
           downloadBox.style.display = 'block';
@@ -296,8 +290,11 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   // ---------------------------------------------------------------------
-  // Careers (careers.html). Applications go to Apps Script and Drive only,
-  // not to Salesforce or HubSpot.
+  // Careers (careers.html). The resume file goes to Google Drive > Careers
+  // through a small Apps Script (the form's action URL), which returns the
+  // file's Drive link. The application itself goes to Salesforce
+  // Web-to-Lead (Web Source "Careers"), where an automation turns it into a
+  // Job Application and a ClickUp task, and the applicant goes to HubSpot.
   // ---------------------------------------------------------------------
   const careersForm = document.querySelector('#careers-form');
   if (careersForm) {
@@ -336,34 +333,65 @@ document.addEventListener('DOMContentLoaded', () => {
       const captcha = captchaFor_(careersForm);
       if (!captcha.token) { showError(CAPTCHA_MESSAGE); return; }
 
+      const email = (document.querySelector('#careers-email')?.value || '').trim();
+      const phone = (document.querySelector('#careers-phone')?.value || '').trim();
+      const role = document.querySelector('#careers-role')?.value || '';
+
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Submitting...'; }
       try {
-        // There is no real file-upload endpoint on a static site, so the
-        // resume is base64-encoded here and the Apps Script decodes it back
-        // into a real file and saves it to Drive.
-        let resumeBase64 = '', resumeFileName = '', resumeMimeType = '';
+        // A static site has no file-upload endpoint, so the resume is
+        // base64-encoded here and the Apps Script turns it back into a real
+        // file in Drive > Careers. If that fails, the application is still
+        // sent and the applicant is asked to email the resume instead.
+        let resumeUrl = '';
         if (resumeFile) {
-          resumeBase64 = await fileToBase64(resumeFile);
-          resumeFileName = resumeFile.name;
-          resumeMimeType = resumeFile.type;
+          try {
+            const saved = await postToAppsScript(careersForm.action, {
+              firstName: name.firstName,
+              lastName: name.lastName,
+              role: role,
+              resumeBase64: await fileToBase64(resumeFile),
+              resumeFileName: resumeFile.name,
+              resumeMimeType: resumeFile.type
+            });
+            if (saved && saved.result === 'success') resumeUrl = saved.fileUrl || '';
+          } catch (err) {
+            resumeUrl = '';
+          }
         }
 
-        const json = await postToAppsScript(careersForm.action, {
-          fullName: name.fullName,
-          firstName: name.firstName,
-          lastName: name.lastName,
-          email: (document.querySelector('#careers-email')?.value || '').trim(),
-          phone: document.querySelector('#careers-phone')?.value || '',
-          role: document.querySelector('#careers-role')?.value || '',
-          linkedin: document.querySelector('#careers-portfolio')?.value || '',
-          availability: document.querySelector('#careers-availability')?.value || '',
-          coverLetter: document.querySelector('#careers-why')?.value || '',
-          resumeBase64, resumeFileName, resumeMimeType
-        });
-        if (json.result !== 'success') throw new Error(json.error || 'Request failed');
+        submitToSalesforceWebToLead(Object.assign({
+          retURL: 'https://apexflowspace.com/careers.html',
+          first_name: name.firstName,
+          last_name: name.lastName,
+          email: email,
+          phone: phone,
+          company: 'Careers applicant',
+          description: document.querySelector('#careers-why')?.value || '',
+          Web_Source__c: 'Careers',
+          Careers_Role__c: role,
+          Careers_Portfolio_URL__c: (document.querySelector('#careers-portfolio')?.value || '').trim(),
+          Careers_Resume_URL__c: resumeUrl,
+          Careers_Earliest_Start__c: (document.querySelector('#careers-availability')?.value || '').trim()
+        }, salesforceCaptchaSettings_(captcha.token)));
+
+        await submitToHubSpot(HUBSPOT_FORM_CAREERS, {
+          email: email,
+          firstname: name.firstName,
+          lastname: name.lastName,
+          phone: phone
+        }).catch(() => {});
 
         careersForm.style.display = 'none';
-        if (successBox) successBox.style.display = 'block';
+        if (successBox) {
+          successBox.style.display = 'block';
+          if (resumeFile && !resumeUrl) {
+            const note = document.createElement('p');
+            note.style.cssText = 'margin-top:12px; font-size:14px;';
+            note.textContent = "Your application is in, but your resume didn't upload. Please email it to hello@apexflowspace.com with your name in the subject line.";
+            successBox.appendChild(note);
+          }
+        }
       } catch (err) {
         if (submitBtn) {
           submitBtn.disabled = false;
@@ -417,36 +445,24 @@ document.addEventListener('DOMContentLoaded', () => {
           company: company || companyFromEmail_(email),
           Service_Interest__c: 'Free Clarity Session',
           description: summary,
+          // Separate answers for the ClickUp task (Current Setup labels,
+          // Biggest Bottleneck dropdown). Values must match ClickUp's options.
+          Current_Setup__c: setup.join(';'),
+          Biggest_Bottleneck__c: bottleneck,
           Web_Source__c: 'Clarity Session Landing Page'
         }, salesforceCaptchaSettings_(captcha.token)));
 
-        // Both logs are best-effort: a failure shouldn't stop the visitor
-        // from booking, and the Salesforce lead has already been sent.
-        await Promise.allSettled([
-          submitToHubSpot(HUBSPOT_FORM_CLARITY_SESSIONS, {
-            email: email,
-            firstname: name.firstName,
-            lastname: name.lastName,
-            company: company,
-            // Checkbox properties take their values joined with ";".
-            current_setup: setup.join(';'),
-            biggest_bottleneck: bottleneck
-          }),
-          postToAppsScript(clarityForm.action, {
-            source: 'Clarity Session Landing Page',
-            fullName: name.fullName,
-            firstName: name.firstName,
-            lastName: name.lastName,
-            workEmail: email,
-            company: company,
-            teamSize: '',
-            industry: '',
-            lookingFor: 'Free Clarity Session',
-            pipeline: summary,
-            currentSetup: setup,
-            bottleneck: bottleneck
-          })
-        ]);
+        // HubSpot is best-effort: a failure shouldn't stop the visitor from
+        // booking, and the Salesforce lead has already been sent.
+        await submitToHubSpot(HUBSPOT_FORM_CLARITY_SESSIONS, {
+          email: email,
+          firstname: name.firstName,
+          lastname: name.lastName,
+          company: company,
+          // Checkbox properties take their values joined with ";".
+          current_setup: setup.join(';'),
+          biggest_bottleneck: bottleneck
+        }).catch(() => {});
         clarityForm.reset();
       } finally {
         showStatus('var(--blue)', "Thanks, that's in. Taking you to the calendar to pick a time...");
@@ -481,8 +497,6 @@ document.addEventListener('DOMContentLoaded', () => {
       if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Sending...'; }
       try {
         const payload = {
-          source: 'Contact Form',
-          fullName: name.fullName,
           firstName: name.firstName,
           lastName: name.lastName,
           workEmail: (document.querySelector('#email')?.value || '').trim(),
@@ -509,6 +523,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }, salesforceCaptchaSettings_(captcha.token)));
 
         // HubSpot runs alongside but never holds up the visitor's message.
+        // Salesforce sends the lead on to ClickUp (Lead Generation).
         submitToHubSpot(HUBSPOT_FORM_STRATEGY_CALLS, {
           email: payload.workEmail,
           firstname: payload.firstName,
@@ -520,8 +535,6 @@ document.addEventListener('DOMContentLoaded', () => {
           tell_us_about_your_current_pipeline: payload.pipeline
         }).catch(() => {});
 
-        const sheet = await postToAppsScript(form.action, payload);
-        if (sheet.result !== 'success') throw new Error('Sheet log failed');
         form.reset();
         showStatus('var(--blue)', "Thanks, that's in. We reply to strategy call requests within 1 business day.");
       } catch (err) {
