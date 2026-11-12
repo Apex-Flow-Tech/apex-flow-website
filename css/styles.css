@@ -757,3 +757,26 @@ td{ color:var(--ink-2); }
   .trust-strip-inner{ flex-direction:column; align-items:flex-start; gap:18px; }
   .trust-logos{ gap:24px; }
 }
+
+/* ---------- Photos ----------
+   People photography. .photo-frame is the rounded frame; .photo-split
+   sets a section heading beside a photo and stacks them on small screens. */
+.photo-frame{
+  margin:0;
+  aspect-ratio:3/2;
+  border-radius:20px;
+  overflow:hidden;
+  background:var(--line);
+  border:1px solid var(--line);
+  box-shadow:0 1px 2px rgba(15,23,42,.04), 0 24px 48px -28px rgba(15,23,42,.28);
+}
+.photo-frame img{ width:100%; height:100%; object-fit:cover; display:block; }
+.photo-split{
+  display:grid; grid-template-columns:1fr 1fr; gap:56px; align-items:center;
+  margin-bottom:52px;
+}
+.photo-split > *{ min-width:0; }
+.photo-split .section-head{ margin-bottom:0; }
+@media (max-width:960px){
+  .photo-split{ grid-template-columns:1fr; gap:28px; margin-bottom:40px; }
+}
