@@ -12,6 +12,50 @@ document.addEventListener('DOMContentLoaded', () => {
     aboutVideo.pause();
   }
 
+  // Hero video: a figure with data-hero-video="assets/videos/<name>" gets a
+  // silent looping clip (<name>.webm, then <name>.mp4) laid over its photo.
+  // The photo is the poster. Visitors who ask for reduced motion or data
+  // saving keep the photo and never download the clip.
+  const conn = navigator.connection || navigator.mozConnection || navigator.webkitConnection;
+  const keepPhoto =
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches ||
+    window.matchMedia('(prefers-reduced-data: reduce)').matches ||
+    (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')));
+  if (!keepPhoto) {
+    document.querySelectorAll('.photo-frame[data-hero-video]').forEach((frame) => {
+      const img = frame.querySelector('img');
+      const base = frame.dataset.heroVideo;
+      if (!img || !base) return;
+      const video = document.createElement('video');
+      video.className = 'hero-video';
+      video.muted = true;
+      video.defaultMuted = true;
+      video.loop = true;
+      video.autoplay = true;
+      video.playsInline = true;
+      video.setAttribute('muted', '');
+      video.setAttribute('playsinline', '');
+      video.setAttribute('aria-hidden', 'true');
+      video.tabIndex = -1;
+      video.disablePictureInPicture = true;
+      video.preload = 'auto';
+      video.poster = img.currentSrc || img.src;
+      [['webm', 'video/webm'], ['mp4', 'video/mp4']].forEach(([ext, type]) => {
+        const source = document.createElement('source');
+        source.src = base + '.' + ext;
+        source.type = type;
+        video.appendChild(source);
+      });
+      // Only reveal the clip once it is really playing, so a blocked
+      // autoplay or a missing file leaves the photo in place.
+      video.addEventListener('playing', () => video.classList.add('is-playing'), { once: true });
+      frame.classList.add('has-video');
+      frame.appendChild(video);
+      const attempt = video.play();
+      if (attempt && attempt.catch) attempt.catch(() => {});
+    });
+  }
+
   // ---------------------------------------------------------------------
   // Lead destinations
   // ---------------------------------------------------------------------
