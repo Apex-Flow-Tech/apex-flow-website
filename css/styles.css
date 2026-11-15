@@ -780,3 +780,48 @@ td{ color:var(--ink-2); }
 @media (max-width:960px){
   .photo-split{ grid-template-columns:1fr; gap:28px; margin-bottom:40px; }
 }
+
+/* ---------- Brand colour sections ----------
+   Pages alternate between brand-tinted bands (light blue, white, soft sky)
+   with one dark navy feature band and a navy footer, so each page reads
+   as distinct colour blocks instead of one flat background. Dark areas
+   redefine the colour tokens, so every component inside them adapts. */
+:root{
+  --tint-blue: #eaf1ff;
+  --tint-sky:  #e6f3ff;
+}
+.hero, .page-hero, .article-hero{
+  background:linear-gradient(180deg, var(--tint-blue) 0%, #f3f7ff 100%);
+}
+main > section:not(.hero):not(.page-hero):not(.article-hero):not(.trust-strip):not(#cta){
+  background:var(--surface);
+}
+main > section:not(.hero):not(.page-hero):not(.article-hero):not(.trust-strip):not(#cta):nth-of-type(odd){
+  background:var(--tint-sky);
+}
+main > section#cta{ background:var(--surface); }
+.trust-strip{ background:var(--surface); }
+
+/* Dark navy feature band: one per page */
+#values, #architecture, #guardrails, #approach, #retainers,
+.theme-dark{
+  --ink:#ffffff; --ink-2:#c6d2e3; --ink-3:#93a4bd;
+  --line:rgba(255,255,255,.12);
+  --surface:var(--navy-3); --bg:var(--navy-2);
+  --blue:#6ea8ff; --blue-dim:rgba(110,168,255,.14); --blue-dim-2:rgba(110,168,255,.30);
+  background:linear-gradient(160deg, var(--navy-2), var(--navy)) !important;
+  color:var(--ink);
+}
+
+/* Navy footer */
+.site-footer{
+  --ink:#ffffff; --ink-2:#c6d2e3; --ink-3:#93a4bd;
+  --line:rgba(255,255,255,.12);
+  --surface:var(--navy-3); --bg:var(--navy-3);
+  --blue:#6ea8ff; --blue-dim:rgba(110,168,255,.14); --blue-dim-2:rgba(110,168,255,.30);
+  background:var(--navy);
+  color:var(--ink);
+  border-top:0;
+}
+.site-footer .btn-primary{ background:#2563eb; color:#fff; }
+:is(#values, #architecture, #guardrails, #approach, #retainers, .theme-dark) .btn-primary{ background:#2563eb; color:#fff; }
