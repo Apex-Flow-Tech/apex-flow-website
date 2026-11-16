@@ -132,7 +132,31 @@ document.addEventListener('DOMContentLoaded', () => {
       ['Day 0', 'Welcome email', 'Sent'], ['Day 2', 'WhatsApp check-in', 'Delivered'],
       ['Day 4', 'Helpful guide', 'Opened'], ['Day 9', 'Book a call invite', 'Replied'] ], result: 'Sequence stopped: customer replied' },
     'dashboard': { kind: 'dashboard', app: 'Reports', title: 'This month', kpis: [['Enquiries', 248], ['Won', 37], ['Follow-up rate', 96, '%']],
-      bars: [['Instagram', 82], ['Website', 64], ['Referral', 45], ['TikTok', 30]] }
+      bars: [['Instagram', 82], ['Website', 64], ['Referral', 45], ['TikTok', 30]] },
+    'contact': { kind: 'record', app: 'Enquiries', title: 'Your enquiry', from: 'Received', to: 'Call booked', fields: [
+      ['Name', 'Your name'], ['Company', 'Your business'], ['Looking for', 'CRM build'],
+      ['Reply', 'Within 1 business day'], ['Owner', 'Jeffrey U.'] ] },
+    'careers': { kind: 'record', app: 'Hiring', title: 'New application', from: 'Applied', to: 'Interview', fields: [
+      ['Role', 'CRM/Salesforce Support Intern'], ['Portfolio', 'Link received'], ['Resume', 'Saved to Drive'],
+      ['Start', 'Flexible'], ['Reviewer', 'Jeffrey U.'] ] },
+    'pricing': { kind: 'tasks', app: 'Launch Sprint', title: 'Build progress', items: [
+      ['Roles and licences mapped', 'Week 1', 'done'], ['Lead capture and routing live', 'Week 1', 'done'],
+      ['Pipeline and approvals built', 'Week 2', 'done'], ['Data migrated and deduplicated', 'Week 2', 'done'],
+      ['Team trained, system handed over', 'Week 3', 'next', 'This week'] ] },
+    'process': { kind: 'sequence', app: 'Build standard', title: 'Five fixed stages', items: [
+      ['Stage 1', 'Capture and qualify', 'Done'], ['Stage 2', 'Convert', 'Done'], ['Stage 3', 'Close and govern', 'Approved'],
+      ['Stage 4', 'Deliver and onboard', 'Live'], ['Stage 5', 'Retain', 'Monthly check'] ], result: 'Same standard, every client' },
+    'blog': { kind: 'sequence', app: 'Timeline', title: 'One lead, fully tracked', items: [
+      ['Day 0', 'Enquiry logged from Instagram', 'Logged'], ['Day 1', 'First follow-up sent', 'Sent'],
+      ['Day 3', 'Site visit booked', 'Booked'], ['Day 7', 'Offer accepted', 'Won'] ], result: 'Every step in one place the business owns' },
+    'toolkit': { kind: 'sequence', app: 'Follow-ups', title: 'Never-Lose-a-Lead cadence', items: [
+      ['Day 1', 'Template 1: first reply', 'Sent'], ['Day 3-4', 'Template 2: check-in', 'Opened'],
+      ['Day 7', 'Template 3: helpful nudge', 'Replied'], ['Day 14', 'Template 4: last touch', 'Not needed'] ], result: 'Lead replied, tracker updated' },
+    'cases': { kind: 'dashboard', app: 'Reports', title: 'Pipeline health', kpis: [['Leads routed', 312], ['Unclaimed', 0], ['On-time follow-up', 98, '%']],
+      bars: [['New', 70], ['Qualified', 52], ['Proposal', 34], ['Won', 22]], barsLabel: 'Deals by stage' },
+    'about': { kind: 'list', app: 'Clients', title: 'Owned by the business', items: [
+      ['web', 'Account', 'Brightline Logistics', 'Owner: Tunde'], ['wa', 'Account', 'Lekki Gardens buyers', 'Owner: Kemi'],
+      ['call', 'Account', 'Adeyemi Family Office', 'Owner: Segun'], ['ig', 'Account', 'Harbour Homes', 'Owner: Ada'] ] }
   };
   const ICONS = { wa: 'W', ig: 'I', call: 'C', web: 'F', tt: 'T' };
   const buildScene = (s) => {
@@ -143,12 +167,12 @@ document.addEventListener('DOMContentLoaded', () => {
     } else if (s.kind === 'list') {
       body = '<div class="crm-list">' + s.items.map(([k, ch, msg, act]) => '<div class="crm-item crm-step"><span class="crm-ch crm-ch-' + k + '">' + ICONS[k] + '</span><span class="crm-msg"><b>' + esc(ch) + '</b>' + esc(msg) + '</span><span class="crm-tag">' + esc(act) + '</span></div>').join('') + '</div>';
     } else if (s.kind === 'tasks') {
-      body = '<div class="crm-list">' + s.items.map(([t, who, st]) => '<div class="crm-task crm-step" data-state="' + st + '"><span class="crm-check"></span><span class="crm-msg">' + esc(t) + '<i>' + esc(who) + '</i></span><span class="crm-tag">' + (st === 'done' ? 'Done' : 'Reminder sent') + '</span></div>').join('') + '</div>';
+      body = '<div class="crm-list">' + s.items.map(([t, who, st, tag]) => '<div class="crm-task crm-step" data-state="' + st + '"><span class="crm-check"></span><span class="crm-msg">' + esc(t) + '<i>' + esc(who) + '</i></span><span class="crm-tag">' + esc(tag || (st === 'done' ? 'Done' : 'Reminder sent')) + '</span></div>').join('') + '</div>';
     } else if (s.kind === 'sequence') {
       body = '<div class="crm-seq">' + s.items.map(([d, t, st]) => '<div class="crm-seq-step crm-step"><span class="crm-seq-dot"></span><span class="crm-msg"><b>' + esc(d) + '</b>' + esc(t) + '</span><span class="crm-tag">' + esc(st) + '</span></div>').join('') + '</div><div class="crm-result">' + esc(s.result) + '</div>';
     } else if (s.kind === 'dashboard') {
       body = '<div class="crm-kpis">' + s.kpis.map(([l, n, u]) => '<div class="crm-kpi"><span class="crm-kpi-n" data-n="' + n + '" data-u="' + (u || '') + '">0</span><span class="crm-label">' + esc(l) + '</span></div>').join('') + '</div>' +
-        '<div class="crm-bars"><span class="crm-label">Enquiries by source</span>' + s.bars.map(([l, v]) => '<div class="crm-bar"><span>' + esc(l) + '</span><i style="--w:' + v + '%"></i></div>').join('') + '</div>';
+        '<div class="crm-bars"><span class="crm-label">' + esc(s.barsLabel || 'Enquiries by source') + '</span>' + s.bars.map(([l, v]) => '<div class="crm-bar"><span>' + esc(l) + '</span><i style="--w:' + v + '%"></i></div>').join('') + '</div>';
     }
     return '<div class="crm-win-bar"><span></span><span></span><span></span><b>' + esc(s.app) + '</b></div>' +
       '<div class="crm-win-head"><span class="crm-dot"></span><span class="crm-title">' + esc(s.title) + '</span>' +
@@ -157,7 +181,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-  document.querySelectorAll('.photo-frame[data-crm-demo]').forEach((frame) => {
+  document.querySelectorAll('[data-crm-demo]').forEach((frame) => {
     const scene = CRM_SCENES[frame.dataset.crmDemo];
     if (!scene) return;
     frame.classList.add('has-crm-demo');
@@ -212,7 +236,17 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     };
     const close = () => { timers.forEach(clearTimeout); timers = []; frame.classList.remove('crm-open'); };
-    if (canHover) {
+    if (frame.hasAttribute('data-crm-auto')) {
+      // Stand-alone CRM panels play by themselves while on screen, and
+      // replay a few seconds after each run finishes.
+      let loop;
+      const run = () => { play(); clearTimeout(loop); loop = setTimeout(run, reduceMotion ? 600000 : 11000); };
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          entries.forEach((e) => { if (e.isIntersecting) { if (!frame.classList.contains('crm-open')) run(); } else { clearTimeout(loop); timers.forEach(clearTimeout); timers = []; finish(); frame.classList.remove('crm-open'); } });
+        }, { threshold: 0.35 }).observe(frame);
+      } else run();
+    } else if (canHover) {
       frame.addEventListener('mouseenter', play);
       frame.addEventListener('mouseleave', close);
     } else if ('IntersectionObserver' in window) {

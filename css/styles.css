@@ -954,28 +954,65 @@ p, li, .fix-line span, blockquote{ text-wrap:pretty; }
 }
 
 /* ---------- Service cards: CRM screens in action ----------
-   A wide CRM screenshot replaces the icon at the top of each service card,
-   edge to edge, with a slow pan so the screen feels live. */
+   The full CRM screen image sits edge to edge at the top of each service
+   card. A soft light passes over it; hovering zooms in slightly. */
 .card .svc-shot{
-  margin:-28px -28px 16px; height:82px; overflow:hidden; position:relative;
+  margin:-28px -28px 18px; aspect-ratio:16/9; overflow:hidden; position:relative;
   border-radius:var(--radius) var(--radius) 0 0; background:var(--line);
+  border-bottom:1px solid var(--line);
 }
-.card .svc-shot img{
-  width:100%; height:100%; object-fit:cover; display:block;
-  transform:scale(1.12); animation:svc-pan 14s ease-in-out infinite alternate;
-  transition:transform .6s ease;
-}
-.grid .card:nth-child(2n) .svc-shot img{ animation-duration:17s; animation-direction:alternate-reverse; }
-.grid .card:nth-child(3n) .svc-shot img{ animation-duration:15s; }
-@keyframes svc-pan{
-  from{ transform:scale(1.12) translate3d(-3.5%,1.5%,0); }
-  to{   transform:scale(1.12) translate3d(3.5%,-1.5%,0); }
-}
+.card .svc-shot img{ width:100%; height:100%; object-fit:cover; display:block; transition:transform .8s ease; }
 .card .svc-shot::after{
   content:""; position:absolute; inset:0; pointer-events:none;
   background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%);
   background-size:260% 100%; animation:live-sweep 7s ease-in-out infinite;
 }
+.grid .card:nth-child(2n) .svc-shot::after{ animation-delay:-2.3s; }
+.grid .card:nth-child(3n) .svc-shot::after{ animation-delay:-4.6s; }
 @keyframes live-sweep{ 0%,100%{ background-position:130% 0; } 50%{ background-position:-30% 0; } }
-.card:hover .svc-shot img{ animation-play-state:paused; transform:scale(1.2); }
-@media (prefers-reduced-motion: reduce){ .card .svc-shot img, .card .svc-shot::after{ animation:none; } }
+.card:hover .svc-shot img{ transform:scale(1.06); }
+@media (prefers-reduced-motion: reduce){ .card .svc-shot::after{ animation:none; } }
+
+/* ---------- Stand-alone CRM panels ----------
+   .crm-showcase is a branded backdrop that holds a CRM window which plays by
+   itself on page headers and feature sections (no photo needed). */
+.page-hero-grid{ display:grid; grid-template-columns:1.1fr .9fr; gap:48px; align-items:center; }
+.page-hero-grid > *{ min-width:0; }
+@media (max-width:960px){ .page-hero-grid{ grid-template-columns:1fr; gap:28px; } }
+.crm-showcase{
+  position:relative; min-height:330px; border-radius:20px; overflow:hidden;
+  display:flex; align-items:center; justify-content:center; padding:28px 20px;
+  background:
+    radial-gradient(60% 70% at 85% 10%, rgba(88,166,255,.35), transparent 70%),
+    radial-gradient(50% 60% at 10% 100%, rgba(37,99,235,.45), transparent 70%),
+    linear-gradient(160deg, #131a24, #0d1117);
+  box-shadow:0 24px 48px -28px rgba(11,18,32,.6);
+}
+.crm-showcase::before{
+  content:""; position:absolute; inset:0; pointer-events:none; opacity:.5;
+  background-image:linear-gradient(rgba(255,255,255,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.05) 1px, transparent 1px);
+  background-size:28px 28px; animation:stage-grid 18s linear infinite;
+}
+@keyframes stage-grid{ to{ background-position:28px 28px, 28px 28px; } }
+.crm-showcase::after{
+  content:""; position:absolute; width:180px; height:180px; border-radius:50%; right:-40px; top:-50px;
+  background:radial-gradient(circle, rgba(88,166,255,.45), transparent 70%); animation:stage-orb 9s ease-in-out infinite alternate;
+}
+@keyframes stage-orb{ to{ transform:translate(-60px, 90px) scale(1.2); } }
+.crm-showcase .crm-win{ position:relative; right:auto; bottom:auto; top:auto; width:min(340px, 100%); z-index:1; }
+.crm-task[data-state="next"] .crm-check{ border-color:#2563eb; }
+.crm-task[data-state="next"] .crm-tag{ background:rgba(37,99,235,.12); color:#2563eb; }
+.section-stage{ margin-bottom:40px; }
+@media (max-width:480px){ .crm-showcase{ min-height:300px; padding:18px 10px; } .crm-showcase .crm-win{ top:auto; } .crm-showcase .crm-win-bar{ display:flex; } }
+
+/* ---------- Living photos everywhere ----------
+   Still photos (without their own video loop) drift slowly, and card
+   photos zoom gently on hover, so every page has some movement. */
+.photo-frame:not(.has-video) > img{ animation:still-drift 20s ease-in-out infinite alternate; transform-origin:55% 45%; }
+@keyframes still-drift{ from{ transform:scale(1.02); } to{ transform:scale(1.1) translate3d(-1.5%,1%,0); } }
+.post-card{ overflow:hidden; }
+.post-card-art{ transition:transform .8s ease; }
+.post-card:hover .post-card-art{ transform:scale(1.06); }
+@media (prefers-reduced-motion: reduce){
+  .photo-frame > img, .crm-showcase::before, .crm-showcase::after{ animation:none; }
+}
