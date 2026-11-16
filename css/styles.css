@@ -952,3 +952,30 @@ p, li, .fix-line span, blockquote{ text-wrap:pretty; }
   .hero-meta{ grid-template-columns:1fr; gap:14px; }
   .hero-meta-item{ padding:0; border-left:none; }
 }
+
+/* ---------- Service cards: CRM screens in action ----------
+   A wide CRM screenshot replaces the icon at the top of each service card,
+   edge to edge, with a slow pan so the screen feels live. */
+.card .svc-shot{
+  margin:-28px -28px 16px; height:82px; overflow:hidden; position:relative;
+  border-radius:var(--radius) var(--radius) 0 0; background:var(--line);
+}
+.card .svc-shot img{
+  width:100%; height:100%; object-fit:cover; display:block;
+  transform:scale(1.12); animation:svc-pan 14s ease-in-out infinite alternate;
+  transition:transform .6s ease;
+}
+.grid .card:nth-child(2n) .svc-shot img{ animation-duration:17s; animation-direction:alternate-reverse; }
+.grid .card:nth-child(3n) .svc-shot img{ animation-duration:15s; }
+@keyframes svc-pan{
+  from{ transform:scale(1.12) translate3d(-3.5%,1.5%,0); }
+  to{   transform:scale(1.12) translate3d(3.5%,-1.5%,0); }
+}
+.card .svc-shot::after{
+  content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(115deg, transparent 35%, rgba(255,255,255,.22) 50%, transparent 65%);
+  background-size:260% 100%; animation:live-sweep 7s ease-in-out infinite;
+}
+@keyframes live-sweep{ 0%,100%{ background-position:130% 0; } 50%{ background-position:-30% 0; } }
+.card:hover .svc-shot img{ animation-play-state:paused; transform:scale(1.2); }
+@media (prefers-reduced-motion: reduce){ .card .svc-shot img, .card .svc-shot::after{ animation:none; } }
