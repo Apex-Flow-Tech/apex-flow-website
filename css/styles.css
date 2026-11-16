@@ -834,3 +834,68 @@ main > section#cta{ background:var(--surface); }
 }
 .site-footer .btn-primary{ background:#2563eb; color:#fff; }
 :is(#values, #architecture, #guardrails, #approach, #retainers, .theme-dark) .btn-primary{ background:#2563eb; color:#fff; }
+
+/* ---------- CRM demo over hero photos ----------
+   js/main.js adds a small CRM record to hero photos with data-crm-demo.
+   Hover (or tap) types an example lead into it. */
+.photo-frame.has-crm-demo{ position:relative; cursor:pointer; }
+.crm-demo{
+  position:absolute; right:16px; bottom:16px; z-index:2;
+  width:min(300px, calc(100% - 32px));
+  background:rgba(255,255,255,.96);
+  border:1px solid #dbe4f3; border-radius:14px;
+  box-shadow:0 20px 40px -18px rgba(11,18,32,.45);
+  padding:14px 16px 12px;
+  font-family:var(--font-body); color:#0b1220;
+  opacity:0; transform:translateY(14px) scale(.98);
+  transition:opacity .3s ease, transform .3s ease;
+  pointer-events:none;
+}
+.crm-open .crm-demo{ opacity:1; transform:none; }
+.crm-demo-head{ display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.crm-demo-dot{ width:8px; height:8px; border-radius:50%; background:#2563eb; box-shadow:0 0 0 3px rgba(37,99,235,.18); }
+.crm-demo-title{ font-family:var(--font-head); font-weight:700; font-size:13.5px; }
+.crm-demo-stage{
+  margin-left:auto; font-size:11px; font-weight:700; letter-spacing:.02em;
+  padding:3px 9px; border-radius:999px; background:#eef2f7; color:#47536b;
+  transition:background .3s ease, color .3s ease;
+}
+.crm-demo-stage.is-moved{ background:#2563eb; color:#fff; }
+.crm-demo-row{
+  display:grid; grid-template-columns:78px 1fr; gap:8px; align-items:center;
+  padding:6px 0; border-top:1px solid #eef2f7; font-size:12.5px;
+}
+.crm-demo-label{ color:#64748b; }
+.crm-demo-value{
+  min-height:18px; padding:1px 6px; border-radius:5px; color:#0b1220; font-weight:500;
+  white-space:nowrap; overflow:hidden; text-overflow:ellipsis;
+  transition:background .2s ease;
+}
+.crm-demo-row.is-typing .crm-demo-value{ background:rgba(37,99,235,.08); box-shadow:inset 0 0 0 1px rgba(37,99,235,.45); }
+.crm-demo-row.is-typing .crm-demo-value::after{
+  content:""; display:inline-block; width:1px; height:13px; margin-left:1px;
+  background:#2563eb; vertical-align:-2px; animation:crm-caret .8s steps(1) infinite;
+}
+@keyframes crm-caret{ 50%{ opacity:0; } }
+.crm-demo-foot{ display:flex; justify-content:flex-end; margin-top:8px; height:18px; }
+.crm-demo-saved{
+  font-size:11.5px; font-weight:700; color:#15803d;
+  opacity:0; transform:translateY(4px); transition:opacity .25s ease, transform .25s ease;
+}
+.crm-demo-saved::before{ content:"\2713  "; }
+.crm-demo.is-saved .crm-demo-saved{ opacity:1; transform:none; }
+.crm-demo-hint{
+  position:absolute; left:16px; bottom:16px; z-index:2;
+  font:600 12px var(--font-body); color:#fff;
+  background:rgba(11,18,32,.66); border:1px solid rgba(255,255,255,.22);
+  padding:7px 12px; border-radius:999px; cursor:pointer;
+  backdrop-filter:blur(6px); -webkit-backdrop-filter:blur(6px);
+  transition:opacity .25s ease;
+}
+.crm-demo-hint:focus-visible{ outline:2px solid #fff; outline-offset:2px; }
+.crm-open .crm-demo-hint{ opacity:0; }
+@media (max-width:480px){
+  .crm-demo{ right:10px; bottom:10px; width:calc(100% - 20px); padding:10px 12px 8px; }
+  .crm-demo-row{ padding:4px 0; font-size:12px; }
+  .crm-demo-hint{ left:10px; bottom:10px; }
+}

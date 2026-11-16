@@ -56,6 +56,93 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // CRM demo: a hero photo with data-crm-demo="<scene>" shows a small CRM
+  // record over the photo. Hovering (or tapping on a phone) types a new
+  // lead into it, field by field, ending with a stage change. Example data
+  // only; nothing is sent anywhere.
+  const CRM_SCENES = {
+    'home': { title: 'New lead', fields: [
+      ['Name', 'Adaeze Okafor'], ['Company', 'Brightline Logistics'],
+      ['Phone', '+234 803 555 0142'], ['Source', 'Website form'],
+      ['Owner', 'Tunde A.'] ], from: 'New', to: 'Qualified' },
+    'real-estate': { title: 'Buyer enquiry', fields: [
+      ['Name', 'Chinedu Eze'], ['Interest', '3-bed terrace, Lekki'],
+      ['Source', 'Instagram ad'], ['Site visit', 'Thu, 10:00'],
+      ['Agent', 'Kemi O.'] ], from: 'Enquiry', to: 'Site visit booked' },
+    'finance': { title: 'Client onboarding', fields: [
+      ['Name', 'Funmi Adeyemi'], ['Product', 'Fixed income'],
+      ['Amount', '₦25,000,000'], ['Documents', 'KYC complete'],
+      ['Advisor', 'Segun B.'] ], from: 'KYC', to: 'Ready to invest' }
+  };
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  document.querySelectorAll('.photo-frame[data-crm-demo]').forEach((frame) => {
+    const scene = CRM_SCENES[frame.dataset.crmDemo];
+    if (!scene) return;
+    frame.classList.add('has-crm-demo');
+    const panel = document.createElement('div');
+    panel.className = 'crm-demo';
+    panel.setAttribute('aria-hidden', 'true');
+    panel.innerHTML =
+      '<div class="crm-demo-head"><span class="crm-demo-dot"></span><span class="crm-demo-title"></span>' +
+      '<span class="crm-demo-stage"></span></div><div class="crm-demo-rows"></div>' +
+      '<div class="crm-demo-foot"><span class="crm-demo-saved">Saved</span></div>';
+    panel.querySelector('.crm-demo-title').textContent = scene.title;
+    const stage = panel.querySelector('.crm-demo-stage');
+    const rows = panel.querySelector('.crm-demo-rows');
+    const values = scene.fields.map(([label]) => {
+      const row = document.createElement('div');
+      row.className = 'crm-demo-row';
+      const l = document.createElement('span'); l.className = 'crm-demo-label'; l.textContent = label;
+      const v = document.createElement('span'); v.className = 'crm-demo-value';
+      row.append(l, v); rows.appendChild(row);
+      return v;
+    });
+    const hint = document.createElement('button');
+    hint.type = 'button';
+    hint.className = 'crm-demo-hint';
+    hint.textContent = window.matchMedia('(hover: hover)').matches ? 'Hover to see it in the CRM' : 'Tap to see it in the CRM';
+    frame.append(panel, hint);
+
+    let timers = [];
+    const clear = () => { timers.forEach(clearTimeout); timers = []; };
+    const reset = () => {
+      clear();
+      values.forEach((v) => { v.textContent = ''; v.parentNode.classList.remove('is-typing', 'is-done'); });
+      stage.textContent = scene.from; stage.classList.remove('is-moved');
+      panel.classList.remove('is-saved');
+    };
+    const play = () => {
+      reset();
+      frame.classList.add('crm-open');
+      if (reduceMotion) {
+        values.forEach((v, i) => { v.textContent = scene.fields[i][1]; v.parentNode.classList.add('is-done'); });
+        stage.textContent = scene.to; stage.classList.add('is-moved'); panel.classList.add('is-saved');
+        return;
+      }
+      let t = 350;
+      scene.fields.forEach(([, text], i) => {
+        const v = values[i];
+        timers.push(setTimeout(() => v.parentNode.classList.add('is-typing'), t));
+        for (let c = 1; c <= text.length; c++) {
+          timers.push(setTimeout(() => { v.textContent = text.slice(0, c); }, t + c * 45));
+        }
+        t += text.length * 45 + 180;
+        timers.push(setTimeout(() => { v.parentNode.classList.remove('is-typing'); v.parentNode.classList.add('is-done'); }, t));
+      });
+      timers.push(setTimeout(() => { stage.textContent = scene.to; stage.classList.add('is-moved'); }, t + 250));
+      timers.push(setTimeout(() => panel.classList.add('is-saved'), t + 650));
+    };
+    const close = () => { clear(); frame.classList.remove('crm-open'); };
+    frame.addEventListener('mouseenter', () => { if (window.matchMedia('(hover: hover)').matches) play(); });
+    frame.addEventListener('mouseleave', () => { if (window.matchMedia('(hover: hover)').matches) close(); });
+    frame.addEventListener('click', () => {
+      if (window.matchMedia('(hover: hover)').matches) { play(); return; }
+      if (frame.classList.contains('crm-open')) close(); else play();
+    });
+    hint.addEventListener('focus', play);
+    hint.addEventListener('blur', close);
+  });
+
   // ---------------------------------------------------------------------
   // Lead destinations
   // ---------------------------------------------------------------------
