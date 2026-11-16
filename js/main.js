@@ -68,6 +68,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
+  // Keep short phrases (five words or fewer) on one line. If one would wrap,
+  // it is set to stay on a single line, shrinking the text slightly when
+  // needed. If it still cannot fit, it is left to wrap normally.
+  const keepShortLines = () => {
+    document.querySelectorAll('main h1, main h2, main h3, main h4, main p, main li, main strong, main .hero-meta-item span, main .lp-stat span').forEach((el) => {
+      if (el.closest('.crm-win') || !el.offsetParent) return;
+      if ([...el.children].some((c) => /^(P|DIV|UL|OL|LI|H[1-6])$/.test(c.tagName))) return;
+      el.classList.remove('keep-line'); el.style.fontSize = '';
+      const words = el.textContent.trim().split(/\s+/).filter(Boolean).length;
+      if (words < 2 || words > 5) return;
+      const range = document.createRange();
+      range.selectNodeContents(el);
+      const tops = new Set([...range.getClientRects()].filter((r) => r.width > 1).map((r) => Math.round(r.top / 4)));
+      if (tops.size < 2) return;
+      // Measure against the card or column holding the text, and make sure
+      // keeping the line together never makes that card wider.
+      const holder = el.closest('.card, .fix-card, .process-card, .pricing-card, .stat-card, [class*="col"], .container') || el.parentElement;
+      const before = holder.getBoundingClientRect();
+      const pageWidth = document.documentElement.scrollWidth;
+      el.classList.add('keep-line');
+      const base = parseFloat(getComputedStyle(el).fontSize);
+      for (let scale = 1; scale >= 0.84; scale -= 0.04) {
+        el.style.fontSize = scale === 1 ? '' : (base * scale) + 'px';
+        const now = holder.getBoundingClientRect();
+        const r = el.getBoundingClientRect();
+        if (Math.abs(now.width - before.width) < 1 && r.right <= now.right + 1 && r.left >= now.left - 1 &&
+            document.documentElement.scrollWidth <= pageWidth) return;
+      }
+      el.classList.remove('keep-line'); el.style.fontSize = '';
+    });
+  };
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(keepShortLines); else keepShortLines();
+  let keepTimer;
+  window.addEventListener('resize', () => { clearTimeout(keepTimer); keepTimer = setTimeout(keepShortLines, 150); });
+
   // CRM in action: a photo frame with data-crm-demo="<scene>" gets a small
   // CRM app window over it. Hovering plays the scene (records typing in,
   // messages arriving, tasks ticking off, charts growing). On touch screens,

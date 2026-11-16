@@ -341,7 +341,7 @@ section{ padding:96px 0; }
   display:grid; grid-template-columns:repeat(5,1fr); gap:28px 24px;
   border-top:1px solid var(--line); padding-top:44px;
 }
-@media (max-width:920px){ .process-grid{ grid-template-columns:repeat(2,1fr); } }
+@media (max-width:1320px){ .process-grid{ grid-template-columns:repeat(2,1fr); } }
 @media (max-width:640px){ .process-grid{ grid-template-columns:1fr; } }
 
 .process-card .icon-badge{
@@ -925,7 +925,6 @@ main > section#cta{ background:var(--surface); }
 .fix-line b{ font-size:11px; letter-spacing:.06em; text-transform:uppercase; padding:2px 8px; border-radius:999px; }
 .fix-line.leak b{ background:#fdecec; color:#c2410c; }
 .fix-line.fix b{ background:var(--blue-dim); color:var(--blue); }
-.fix-hint{ margin-top:22px; font-size:13.5px; color:var(--ink-3); text-align:center; }
 @media (max-width:480px){
   .crm-win{ top:8px; transform-origin:center; }
   .crm-win-bar{ display:none; }
@@ -934,6 +933,22 @@ main > section#cta{ background:var(--surface); }
   .crm-bars{ gap:3px; padding-top:5px; }
   .crm-lane{ height:36px; margin-top:5px; }
 }
-.fix-hint .on-touch{ display:none; }
-@media (hover:none), (pointer:coarse){ .fix-hint .on-hover{ display:none; } .fix-hint .on-touch{ display:inline; } }
 @media (max-width:480px){ .crm-kind-list .crm-item:nth-child(n+5){ display:none; } .crm-lane{ display:none; } }
+
+/* ---------- No stranded short lines ----------
+   Headings balance their lines; paragraphs avoid leaving one or two words
+   alone on the last line; short labels (five words or fewer) never wrap. */
+h1, h2, h3, h4, .eyebrow{ text-wrap:balance; }
+p, li, .fix-line span, blockquote{ text-wrap:pretty; }
+.hero-meta-item strong, .hero-meta-item span, .btn, .crm-tag,
+.fix-line b, .footer-col a, .read-more, .trust-logo{ white-space:nowrap; }
+.keep-line{ white-space:nowrap; }
+.hero-meta-item span{ display:block; }
+@media (max-width:1180px) and (min-width:961px){
+  .hero-meta{ grid-template-columns:1fr; gap:14px; }
+  .hero-meta-item{ padding:0; border-left:none; }
+}
+@media (max-width:960px) and (min-width:641px){
+  .hero-meta{ grid-template-columns:1fr; gap:14px; }
+  .hero-meta-item{ padding:0; border-left:none; }
+}
