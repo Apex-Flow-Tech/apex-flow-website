@@ -940,7 +940,7 @@ main > section#cta{ background:var(--surface); }
    alone on the last line; short labels (five words or fewer) never wrap. */
 h1, h2, h3, h4, .eyebrow{ text-wrap:balance; }
 p, li, .fix-line span, blockquote{ text-wrap:pretty; }
-.hero-meta-item strong, .hero-meta-item span, .btn, .crm-tag,
+.hero-meta-item strong, .btn, .crm-tag,
 .fix-line b, .footer-col a, .read-more, .trust-logo{ white-space:nowrap; }
 .keep-line{ white-space:nowrap; }
 .hero-meta-item span{ display:block; }
@@ -1016,3 +1016,40 @@ p, li, .fix-line span, blockquote{ text-wrap:pretty; }
 @media (prefers-reduced-motion: reduce){
   .photo-frame > img, .crm-showcase::before, .crm-showcase::after{ animation:none; }
 }
+
+/* ---------- Centre leftover tiles ----------
+   When the last row of a grid has fewer tiles than columns, those tiles
+   sit in the middle instead of hugging the left edge. */
+@media (min-width:641px){
+  .grid-2 > :last-child:nth-child(odd),
+  .fix-grid > :last-child:nth-child(odd){ grid-column:1 / -1; justify-self:center; width:calc(50% - 14px); }
+}
+@media (min-width:921px){
+  .grid-3 > :last-child:nth-child(3n+1){ grid-column:2; }
+  .grid-3 > :nth-last-child(2):nth-child(3n+1),
+  .grid-3 > :last-child:nth-child(3n+2){ translate:calc(50% + 12px) 0; }
+  .grid-4 > :last-child:nth-child(4n+1){ translate:calc(150% + 36px) 0; }
+  .grid-4 > :nth-last-child(2):nth-child(4n+1),
+  .grid-4 > :last-child:nth-child(4n+2){ translate:calc(100% + 24px) 0; }
+  .grid-4 > :nth-last-child(3):nth-child(4n+1),
+  .grid-4 > :nth-last-child(2):nth-child(4n+2),
+  .grid-4 > :last-child:nth-child(4n+3){ translate:calc(50% + 12px) 0; }
+}
+@media (min-width:641px) and (max-width:920px){
+  .grid-3 > :last-child:nth-child(odd), .grid-4 > :last-child:nth-child(odd){ grid-column:1 / -1; justify-self:center; width:calc(50% - 12px); }
+}
+@media (min-width:641px) and (max-width:1320px){
+  .process-grid > :last-child:nth-child(odd){ grid-column:1 / -1; justify-self:center; width:calc(50% - 12px); }
+}
+/* A single pricing card on its own row sits in the middle. */
+#launch-sprint .section-head{ text-align:center; margin-left:auto; margin-right:auto; }
+#launch-sprint .section-head p{ margin-left:auto; margin-right:auto; }
+#launch-sprint .pricing-card{ margin-left:auto; margin-right:auto; }
+
+/* Partner line under the home hero buttons */
+.partner-row{ display:flex; align-items:center; flex-wrap:wrap; gap:10px 14px; margin-top:18px; font-size:13.5px; color:var(--ink-3); }
+.partner-badge{
+  display:inline-flex; align-items:center; gap:7px; padding:6px 12px; border-radius:999px;
+  border:1px solid #00a1e0; color:#0176d3; background:#eaf6fd; font-weight:700; font-size:12.5px; white-space:nowrap;
+}
+.partner-badge svg{ width:16px; height:16px; }
