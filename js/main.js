@@ -84,8 +84,10 @@ document.addEventListener('DOMContentLoaded', () => {
       if (tops.size < 2) return;
       // Measure against the card or column holding the text, and make sure
       // keeping the line together never makes that card wider.
-      const holder = el.closest('.card, .fix-card, .process-card, .pricing-card, .stat-card, [class*="col"], .container') || el.parentElement;
+      const holder = el.closest('.card, .fix-card, .process-card, .pricing-card, .stat-card, .hero-meta-item, [class*="col"], .container') || el.parentElement;
+      const box = el.parentElement;
       const before = holder.getBoundingClientRect();
+      const boxBefore = box.getBoundingClientRect();
       const pageWidth = document.documentElement.scrollWidth;
       el.classList.add('keep-line');
       const base = parseFloat(getComputedStyle(el).fontSize);
@@ -93,7 +95,11 @@ document.addEventListener('DOMContentLoaded', () => {
         el.style.fontSize = scale === 1 ? '' : (base * scale) + 'px';
         const now = holder.getBoundingClientRect();
         const r = el.getBoundingClientRect();
-        if (Math.abs(now.width - before.width) < 1 && r.right <= now.right + 1 && r.left >= now.left - 1 &&
+        // The phrase must also fit inside its own box, not just the card.
+        const boxNow = box.getBoundingClientRect();
+        if (Math.abs(now.width - before.width) < 1 && Math.abs(boxNow.width - boxBefore.width) < 1 &&
+            r.right <= now.right + 1 && r.left >= now.left - 1 && r.right <= boxNow.right + 1 &&
+            el.scrollWidth <= el.clientWidth + 1 &&
             document.documentElement.scrollWidth <= pageWidth) return;
       }
       el.classList.remove('keep-line'); el.style.fontSize = '';

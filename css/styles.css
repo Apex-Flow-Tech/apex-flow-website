@@ -941,7 +941,7 @@ main > section#cta{ background:var(--surface); }
    alone on the last line; short labels (five words or fewer) never wrap. */
 h1, h2, h3, h4, .eyebrow{ text-wrap:balance; }
 p, li, .fix-line span, blockquote{ text-wrap:pretty; }
-.hero-meta-item strong, .btn, .crm-tag,
+.btn, .crm-tag,
 .fix-line b, .footer-col a, .read-more, .trust-logo{ white-space:nowrap; }
 .keep-line{ white-space:nowrap; }
 .hero-meta-item span{ display:block; }
@@ -1078,3 +1078,22 @@ p, li, .fix-line span, blockquote{ text-wrap:pretty; }
   border:1px solid #00a1e0; color:#0176d3; background:#eaf6fd; font-weight:700; font-size:12.5px; white-space:nowrap;
 }
 .partner-badge svg{ width:16px; height:16px; }
+
+/* ---------- Icon and number rows ----------
+   Every icon or number sits in a fixed column with the same gap, so all
+   titles and sentences in a list start on the same line. Text wraps
+   inside its own column instead of running into the next item. */
+.hero-meta-item{ gap:10px; }
+.hero-meta-item > div{ min-width:0; flex:1; }
+.hero-meta-item strong{ overflow-wrap:anywhere; }
+.step-list{ display:flex; flex-direction:column; gap:0; }
+.step-list > li{ display:grid; grid-template-columns:56px minmax(0,1fr); column-gap:16px; padding:16px 0; border-bottom:1px solid var(--line); }
+.step-list > li:last-child{ border-bottom:none; }
+.step-num{ font-family:var(--font-head); color:var(--blue); font-weight:700; white-space:nowrap; }
+.step-list strong{ font-family:var(--font-head); font-size:15px; }
+.step-list p{ margin:2px 0 0; font-size:14px; }
+/* One gap between an icon and its text, on every page. */
+.process-card .check-list li, .check-list li, .plan-features li, .trust-logo, .partner-badge,
+.placeholder-note, .hero-meta-item{ column-gap:10px; }
+.check-list li > svg, .plan-features li > svg, .trust-logo > svg,
+.partner-badge > svg, .placeholder-note > svg{ margin-left:0; margin-right:0; }
