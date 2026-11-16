@@ -22,7 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
     window.matchMedia('(prefers-reduced-data: reduce)').matches ||
     (conn && (conn.saveData || /(^|-)2g$/.test(conn.effectiveType || '')));
   if (!keepPhoto) {
-    document.querySelectorAll('.photo-frame[data-hero-video]').forEach((frame) => {
+    // Clips for photos lower down the page (loading="lazy") only load when
+    // the photo comes near the screen.
+    const attachClip = (frame) => {
       const img = frame.querySelector('img');
       const base = frame.dataset.heroVideo;
       if (!img || !base) return;
@@ -53,94 +55,139 @@ document.addEventListener('DOMContentLoaded', () => {
       frame.appendChild(video);
       const attempt = video.play();
       if (attempt && attempt.catch) attempt.catch(() => {});
+    };
+    const lazyIO = 'IntersectionObserver' in window
+      ? new IntersectionObserver((entries, obs) => {
+          entries.forEach((e) => { if (e.isIntersecting) { obs.unobserve(e.target); attachClip(e.target); } });
+        }, { rootMargin: '300px 0px' })
+      : null;
+    document.querySelectorAll('.photo-frame[data-hero-video]').forEach((frame) => {
+      const img = frame.querySelector('img');
+      if (lazyIO && img && img.loading === 'lazy') lazyIO.observe(frame);
+      else attachClip(frame);
     });
   }
 
-  // CRM demo: a hero photo with data-crm-demo="<scene>" shows a small CRM
-  // record over the photo. Hovering (or tapping on a phone) types a new
-  // lead into it, field by field, ending with a stage change. Example data
-  // only; nothing is sent anywhere.
+  // CRM in action: a photo frame with data-crm-demo="<scene>" gets a small
+  // CRM app window over it. Hovering plays the scene (records typing in,
+  // messages arriving, tasks ticking off, charts growing). On touch screens,
+  // which have no hover, it plays once the photo scrolls into view.
+  // Example data only; nothing is sent anywhere.
+  const esc = (t) => String(t).replace(/[&<>"]/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
   const CRM_SCENES = {
-    'home': { title: 'New lead', fields: [
-      ['Name', 'Adaeze Okafor'], ['Company', 'Brightline Logistics'],
-      ['Phone', '+234 803 555 0142'], ['Source', 'Website form'],
-      ['Owner', 'Tunde A.'] ], from: 'New', to: 'Qualified' },
-    'real-estate': { title: 'Buyer enquiry', fields: [
-      ['Name', 'Chinedu Eze'], ['Interest', '3-bed terrace, Lekki'],
-      ['Source', 'Instagram ad'], ['Site visit', 'Thu, 10:00'],
-      ['Agent', 'Kemi O.'] ], from: 'Enquiry', to: 'Site visit booked' },
-    'finance': { title: 'Client onboarding', fields: [
-      ['Name', 'Funmi Adeyemi'], ['Product', 'Fixed income'],
-      ['Amount', '₦25,000,000'], ['Documents', 'KYC complete'],
-      ['Advisor', 'Segun B.'] ], from: 'KYC', to: 'Ready to invest' }
+    'home': { kind: 'record', app: 'Leads', title: 'New lead', from: 'New', to: 'Qualified', fields: [
+      ['Name', 'Adaeze Okafor'], ['Company', 'Brightline Logistics'], ['Phone', '+234 803 555 0142'],
+      ['Source', 'Website form'], ['Owner', 'Tunde A.'] ] },
+    'real-estate': { kind: 'record', app: 'Buyers', title: 'Buyer enquiry', from: 'Enquiry', to: 'Site visit booked', fields: [
+      ['Name', 'Chinedu Eze'], ['Interest', '3-bed terrace, Lekki'], ['Source', 'Instagram ad'],
+      ['Site visit', 'Thu, 10:00'], ['Agent', 'Kemi O.'] ] },
+    'finance': { kind: 'record', app: 'Clients', title: 'Client onboarding', from: 'KYC', to: 'Ready to invest', fields: [
+      ['Name', 'Funmi Adeyemi'], ['Product', 'Fixed income'], ['Amount', '₦25,000,000'],
+      ['Documents', 'KYC complete'], ['Advisor', 'Segun B.'] ] },
+    'inbox': { kind: 'list', app: 'Inbox', title: 'All channels, one queue', items: [
+      ['wa', 'WhatsApp', 'Is the 2-bed still available?', 'Assigned to Ada'],
+      ['ig', 'Instagram', 'Price for the Lekki units?', 'Assigned to Kemi'],
+      ['call', 'Call', 'Missed call, 0803 555 0142', 'Call-back task set'],
+      ['web', 'Website', 'Book a strategy call form', 'Assigned to Tunde'],
+      ['tt', 'TikTok', 'How do I pay in instalments?', 'Assigned to Ada'] ] },
+    'followup': { kind: 'tasks', app: 'Follow-ups', title: "Today's follow-ups", items: [
+      ['Call back Chinedu Eze', 'Kemi', 'done'], ['Send payment plan to Funmi', 'Segun', 'done'],
+      ['Site visit reminder, 3 buyers', 'Auto', 'done'], ['Follow up Brightline proposal', 'Tunde', 'overdue'] ] },
+    'outreach': { kind: 'sequence', app: 'Outreach', title: 'Follow-up sequence', items: [
+      ['Day 0', 'Welcome email', 'Sent'], ['Day 2', 'WhatsApp check-in', 'Delivered'],
+      ['Day 4', 'Helpful guide', 'Opened'], ['Day 9', 'Book a call invite', 'Replied'] ], result: 'Sequence stopped: customer replied' },
+    'dashboard': { kind: 'dashboard', app: 'Reports', title: 'This month', kpis: [['Enquiries', 248], ['Won', 37], ['Follow-up rate', 96, '%']],
+      bars: [['Instagram', 82], ['Website', 64], ['Referral', 45], ['TikTok', 30]] }
+  };
+  const ICONS = { wa: 'W', ig: 'I', call: 'C', web: 'F', tt: 'T' };
+  const buildScene = (s) => {
+    let body = '';
+    if (s.kind === 'record') {
+      body = '<div class="crm-rows">' + s.fields.map(([l]) => '<div class="crm-row"><span class="crm-label">' + esc(l) + '</span><span class="crm-value"></span></div>').join('') + '</div>' +
+        '<div class="crm-lane"><span class="crm-col">' + esc(s.from) + '</span><span class="crm-col crm-col-to">' + esc(s.to) + '</span><span class="crm-chip">' + esc(s.fields[0][1]) + '</span></div>';
+    } else if (s.kind === 'list') {
+      body = '<div class="crm-list">' + s.items.map(([k, ch, msg, act]) => '<div class="crm-item crm-step"><span class="crm-ch crm-ch-' + k + '">' + ICONS[k] + '</span><span class="crm-msg"><b>' + esc(ch) + '</b>' + esc(msg) + '</span><span class="crm-tag">' + esc(act) + '</span></div>').join('') + '</div>';
+    } else if (s.kind === 'tasks') {
+      body = '<div class="crm-list">' + s.items.map(([t, who, st]) => '<div class="crm-task crm-step" data-state="' + st + '"><span class="crm-check"></span><span class="crm-msg">' + esc(t) + '<i>' + esc(who) + '</i></span><span class="crm-tag">' + (st === 'done' ? 'Done' : 'Reminder sent') + '</span></div>').join('') + '</div>';
+    } else if (s.kind === 'sequence') {
+      body = '<div class="crm-seq">' + s.items.map(([d, t, st]) => '<div class="crm-seq-step crm-step"><span class="crm-seq-dot"></span><span class="crm-msg"><b>' + esc(d) + '</b>' + esc(t) + '</span><span class="crm-tag">' + esc(st) + '</span></div>').join('') + '</div><div class="crm-result">' + esc(s.result) + '</div>';
+    } else if (s.kind === 'dashboard') {
+      body = '<div class="crm-kpis">' + s.kpis.map(([l, n, u]) => '<div class="crm-kpi"><span class="crm-kpi-n" data-n="' + n + '" data-u="' + (u || '') + '">0</span><span class="crm-label">' + esc(l) + '</span></div>').join('') + '</div>' +
+        '<div class="crm-bars"><span class="crm-label">Enquiries by source</span>' + s.bars.map(([l, v]) => '<div class="crm-bar"><span>' + esc(l) + '</span><i style="--w:' + v + '%"></i></div>').join('') + '</div>';
+    }
+    return '<div class="crm-win-bar"><span></span><span></span><span></span><b>' + esc(s.app) + '</b></div>' +
+      '<div class="crm-win-head"><span class="crm-dot"></span><span class="crm-title">' + esc(s.title) + '</span>' +
+      (s.kind === 'record' ? '<span class="crm-stage">' + esc(s.from) + '</span>' : '<span class="crm-live">Live</span>') + '</div>' + body +
+      '<div class="crm-foot"><span class="crm-saved">' + (s.kind === 'record' ? 'Saved' : 'Up to date') + '</span></div>';
   };
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
   document.querySelectorAll('.photo-frame[data-crm-demo]').forEach((frame) => {
     const scene = CRM_SCENES[frame.dataset.crmDemo];
     if (!scene) return;
     frame.classList.add('has-crm-demo');
-    const panel = document.createElement('div');
-    panel.className = 'crm-demo';
-    panel.setAttribute('aria-hidden', 'true');
-    panel.innerHTML =
-      '<div class="crm-demo-head"><span class="crm-demo-dot"></span><span class="crm-demo-title"></span>' +
-      '<span class="crm-demo-stage"></span></div><div class="crm-demo-rows"></div>' +
-      '<div class="crm-demo-foot"><span class="crm-demo-saved">Saved</span></div>';
-    panel.querySelector('.crm-demo-title').textContent = scene.title;
-    const stage = panel.querySelector('.crm-demo-stage');
-    const rows = panel.querySelector('.crm-demo-rows');
-    const values = scene.fields.map(([label]) => {
-      const row = document.createElement('div');
-      row.className = 'crm-demo-row';
-      const l = document.createElement('span'); l.className = 'crm-demo-label'; l.textContent = label;
-      const v = document.createElement('span'); v.className = 'crm-demo-value';
-      row.append(l, v); rows.appendChild(row);
-      return v;
-    });
-    const hint = document.createElement('button');
-    hint.type = 'button';
-    hint.className = 'crm-demo-hint';
-    hint.textContent = window.matchMedia('(hover: hover)').matches ? 'Hover to see it in the CRM' : 'Tap to see it in the CRM';
-    frame.append(panel, hint);
+    const win = document.createElement('div');
+    win.className = 'crm-win crm-kind-' + scene.kind;
+    win.setAttribute('aria-hidden', 'true');
+    win.innerHTML = buildScene(scene);
+    frame.appendChild(win);
 
     let timers = [];
-    const clear = () => { timers.forEach(clearTimeout); timers = []; };
+    const at = (ms, fn) => timers.push(setTimeout(fn, ms));
     const reset = () => {
-      clear();
-      values.forEach((v) => { v.textContent = ''; v.parentNode.classList.remove('is-typing', 'is-done'); });
-      stage.textContent = scene.from; stage.classList.remove('is-moved');
-      panel.classList.remove('is-saved');
+      timers.forEach(clearTimeout); timers = [];
+      win.classList.remove('is-done', 'is-moved');
+      win.querySelectorAll('.on, .is-typing, .is-filled').forEach((el) => el.classList.remove('on', 'is-typing', 'is-filled'));
+      win.querySelectorAll('.crm-value').forEach((v) => { v.textContent = ''; });
+      win.querySelectorAll('.crm-kpi-n').forEach((n) => { n.textContent = '0'; });
+      const stage = win.querySelector('.crm-stage'); if (stage) stage.textContent = scene.from;
+    };
+    const finish = () => {
+      win.querySelectorAll('.crm-step').forEach((el) => el.classList.add('on'));
+      win.querySelectorAll('.crm-value').forEach((v, i) => { v.textContent = scene.fields[i][1]; v.parentNode.classList.add('is-filled'); });
+      win.querySelectorAll('.crm-kpi-n').forEach((n) => { n.textContent = Number(n.dataset.n).toLocaleString() + n.dataset.u; });
+      const stage = win.querySelector('.crm-stage'); if (stage) stage.textContent = scene.to;
+      win.classList.add('is-moved', 'is-done');
     };
     const play = () => {
       reset();
       frame.classList.add('crm-open');
-      if (reduceMotion) {
-        values.forEach((v, i) => { v.textContent = scene.fields[i][1]; v.parentNode.classList.add('is-done'); });
-        stage.textContent = scene.to; stage.classList.add('is-moved'); panel.classList.add('is-saved');
-        return;
+      if (reduceMotion) { finish(); return; }
+      let t = 450;
+      if (scene.kind === 'record') {
+        win.querySelectorAll('.crm-value').forEach((v, i) => {
+          const text = scene.fields[i][1];
+          at(t, () => v.parentNode.classList.add('is-typing'));
+          for (let c = 1; c <= text.length; c++) at(t + c * 40, () => { v.textContent = text.slice(0, c); });
+          t += text.length * 40 + 160;
+          at(t, () => { v.parentNode.classList.remove('is-typing'); v.parentNode.classList.add('is-filled'); });
+        });
+        at(t + 300, () => { win.classList.add('is-moved'); win.querySelector('.crm-stage').textContent = scene.to; });
+        at(t + 1100, () => win.classList.add('is-done'));
+      } else if (scene.kind === 'dashboard') {
+        win.querySelectorAll('.crm-kpi-n').forEach((n) => {
+          const target = Number(n.dataset.n);
+          for (let f = 1; f <= 30; f++) at(t + f * 40, () => { n.textContent = Math.round(target * f / 30).toLocaleString() + n.dataset.u; });
+        });
+        win.querySelectorAll('.crm-step, .crm-bar').forEach((el, i) => at(t + 300 + i * 220, () => el.classList.add('on')));
+        at(t + 1800, () => win.classList.add('is-done'));
+      } else {
+        win.querySelectorAll('.crm-step').forEach((el, i) => at(t + i * 700, () => el.classList.add('on')));
+        at(t + win.querySelectorAll('.crm-step').length * 700 + 300, () => win.classList.add('is-done'));
       }
-      let t = 350;
-      scene.fields.forEach(([, text], i) => {
-        const v = values[i];
-        timers.push(setTimeout(() => v.parentNode.classList.add('is-typing'), t));
-        for (let c = 1; c <= text.length; c++) {
-          timers.push(setTimeout(() => { v.textContent = text.slice(0, c); }, t + c * 45));
-        }
-        t += text.length * 45 + 180;
-        timers.push(setTimeout(() => { v.parentNode.classList.remove('is-typing'); v.parentNode.classList.add('is-done'); }, t));
-      });
-      timers.push(setTimeout(() => { stage.textContent = scene.to; stage.classList.add('is-moved'); }, t + 250));
-      timers.push(setTimeout(() => panel.classList.add('is-saved'), t + 650));
     };
-    const close = () => { clear(); frame.classList.remove('crm-open'); };
-    frame.addEventListener('mouseenter', () => { if (window.matchMedia('(hover: hover)').matches) play(); });
-    frame.addEventListener('mouseleave', () => { if (window.matchMedia('(hover: hover)').matches) close(); });
-    frame.addEventListener('click', () => {
-      if (window.matchMedia('(hover: hover)').matches) { play(); return; }
-      if (frame.classList.contains('crm-open')) close(); else play();
-    });
-    hint.addEventListener('focus', play);
-    hint.addEventListener('blur', close);
+    const close = () => { timers.forEach(clearTimeout); timers = []; frame.classList.remove('crm-open'); };
+    if (canHover) {
+      frame.addEventListener('mouseenter', play);
+      frame.addEventListener('mouseleave', close);
+    } else if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver((entries) => {
+        entries.forEach((e) => { if (e.isIntersecting) play(); else close(); });
+      }, { threshold: 0.6 });
+      io.observe(frame);
+    } else {
+      play();
+    }
   });
 
   // ---------------------------------------------------------------------
