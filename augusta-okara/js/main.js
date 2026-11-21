@@ -4,13 +4,13 @@
 const CONTACT_EMAIL = "hello@augustaokara.com"; // PLACEHOLDER: replace with her real address
 
 // Mobile menu
-const toggle = document.querySelector(".nav-toggle");
+const toggle = document.querySelector(".burger");
 const links = document.querySelector(".nav-links");
 if (toggle && links) {
   toggle.addEventListener("click", () => {
     const open = links.classList.toggle("open");
     toggle.setAttribute("aria-expanded", String(open));
-    toggle.textContent = open ? "Close" : "Menu";
+    toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
   });
 }
 
