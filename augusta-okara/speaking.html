@@ -11,6 +11,14 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="css/style.css">
+<script>
+  // Turn on animations unless the visitor prefers reduced motion. Safety net: if main.js
+  // never runs, switch them off after 3 seconds so no content stays hidden.
+  if (!matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("motion");
+    setTimeout(function () { if (!window.__aoReady) document.documentElement.classList.remove("motion"); }, 3000);
+  }
+</script>
 </head>
 <body>
 <main>
