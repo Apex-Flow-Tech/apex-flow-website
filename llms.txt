@@ -1,0 +1,30 @@
+# Apex Flow Technologies
+
+> Apex Flow Technologies (Apex Flow) is a CRM implementation partner and official Salesforce Partner based in Abuja, Nigeria, serving businesses across Nigeria including Lagos and Abuja. We help growing businesses choose the right CRM, then design, build, connect and support it on Salesforce, HubSpot, Zoho CRM, Microsoft Dynamics 365 and other leading platforms. We do not sell software; our advice is platform-neutral.
+
+Key facts:
+- What we do: CRM selection, CRM implementation and setup, lead capture and routing, sales pipelines and approvals, reporting dashboards, data migration and deduplication, WhatsApp and channel integrations, team training, and ongoing support on retainer.
+- Platforms: Salesforce (official partner), HubSpot, Zoho CRM, Microsoft Dynamics 365 and other leading CRMs.
+- Industries: B2B teams of any size, with deep experience in real estate developers and agencies, and financial services (investment firms, wealth managers, lenders).
+- Typical timeline: most small and mid-sized teams go live within 1 to 3 weeks.
+- Pricing: scoped per project; Nigeria-based clients are quoted in naira, with setup from 350,000 naira and an optional monthly support retainer.
+- Free offer: a free 30-minute Clarity Session that maps how enquiries flow through a business and recommends the right CRM setup.
+- Founder and CEO: Jeffrey Uwoghiren.
+- Contact: hello@apexflowspace.com, 08100761648, 20 Johnson Adetoye Drive, Abuja 900108, Nigeria.
+
+## Main pages
+- [Home](https://apexflowspace.com/): what we do, platforms we implement, and common questions
+- [How We Work](https://apexflowspace.com/process.html): our five-stage implementation method
+- [Pricing](https://apexflowspace.com/pricing.html): one-time implementation and monthly support retainers
+- [Real Estate CRM](https://apexflowspace.com/real-estate.html): CRM implementation for property developers and agencies in Lagos and Abuja
+- [Financial Services CRM](https://apexflowspace.com/financial-services.html): CRM implementation for investment firms and lenders
+- [Free Clarity Session](https://apexflowspace.com/clarity-session.html): book a free 30-minute session
+- [About](https://apexflowspace.com/about.html): mission, values and how we work
+- [Contact](https://apexflowspace.com/contact.html): book a strategy call
+
+## Guides
+- [How to Choose the Right CRM for a Growing Small Business](https://apexflowspace.com/blog/how-to-choose-a-crm-for-a-growing-small-business.html)
+- [12 Questions to Ask Before You Hire a CRM Implementation Partner](https://apexflowspace.com/blog/questions-to-ask-crm-implementation-partner.html)
+- [Why Your Spreadsheet CRM Breaks at Scale](https://apexflowspace.com/blog/why-spreadsheet-crms-break.html)
+- [The Real Cost of a Lead That Dies in WhatsApp](https://apexflowspace.com/blog/the-real-cost-of-a-lead-that-dies-in-whatsapp.html)
+- [How to Know It's Time to Invest in CRM Architecture](https://apexflowspace.com/blog/signs-you-need-crm-architecture.html)

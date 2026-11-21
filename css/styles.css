@@ -1097,3 +1097,7 @@ p, li, .fix-line span, blockquote{ text-wrap:pretty; }
 .placeholder-note, .hero-meta-item{ column-gap:10px; }
 .check-list li > svg, .plan-features li > svg, .trust-logo > svg,
 .partner-badge > svg, .placeholder-note > svg{ margin-left:0; margin-right:0; }
+.article-body ul{ list-style:disc; padding-left:22px; margin:0 0 20px; }
+.article-body ol{ list-style:decimal; padding-left:22px; margin:0 0 20px; }
+.article-body li{ margin-bottom:8px; }
+.article-body li::marker{ color:var(--blue); }
