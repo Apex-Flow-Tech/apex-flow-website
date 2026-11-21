@@ -12,6 +12,12 @@ if (toggle && links) {
     toggle.setAttribute("aria-expanded", String(open));
     toggle.setAttribute("aria-label", open ? "Close menu" : "Open menu");
   });
+  // Close the menu after choosing a link (needed on the one-page version)
+  links.querySelectorAll("a").forEach((a) => a.addEventListener("click", () => {
+    links.classList.remove("open");
+    toggle.setAttribute("aria-expanded", "false");
+    toggle.setAttribute("aria-label", "Open menu");
+  }));
 }
 
 // Footer year
@@ -97,9 +103,16 @@ document.querySelectorAll(".half-sun p").forEach((p, i) => {
   p.style.setProperty("--i", i);
 });
 
-// Start the hero / page-top entrance once fonts are ready (avoids a jump)
+// Start the hero / page-top entrance once fonts are ready (avoids a jump).
+// Wordmark panels further down the page play their entrance when scrolled into view.
 const heroes = document.querySelectorAll(".hero, .page-top");
-const startHero = () => requestAnimationFrame(() => heroes.forEach((h) => h.classList.add("is-in")));
+const startHero = () => requestAnimationFrame(() => {
+  if (!("IntersectionObserver" in window)) { heroes.forEach((h) => h.classList.add("is-in")); return; }
+  const heroObs = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add("is-in"); heroObs.unobserve(e.target); } });
+  }, { threshold: 0.25 });
+  heroes.forEach((h) => heroObs.observe(h));
+});
 if (document.fonts && document.fonts.ready) {
   Promise.race([document.fonts.ready, new Promise((r) => setTimeout(r, 1200))]).then(startHero);
 } else startHero();

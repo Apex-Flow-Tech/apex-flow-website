@@ -17,3 +17,7 @@ Pages: `index.html` (Home), `about.html` (About Me), `books.html` (My Recent Boo
 - [ ] Social links in the footer of every page
 - [ ] `CONTACT_EMAIL` at the top of `js/main.js` (the forms open an email to this address)
 - [ ] Remove the `noindex` meta tag from each page once the real content is in
+
+## One-page version
+
+`augusta-okara-onepage.html` is the whole site in a single self-contained file: Home, About, Books, FAQ and Speaking are sections on one page, and the CSS and JavaScript are inside the file. It only needs an internet connection for the Google font. Open it in any browser, or upload it as `index.html` to any host (GitHub Pages, Netlify, cPanel).
